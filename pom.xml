@@ -1,0 +1,69 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <!--  <parent>
+        <groupId>com.photon.phresco</groupId>
+        <artifactId>phresco-parent</artifactId>
+        <version>2.0.0.10001-SNAPSHOT</version>
+        <relativePath>../</relativePath>
+    </parent> -->
+
+    <modelVersion>4.0.0</modelVersion>
+	<groupId>com.photon.phresco.pom</groupId>
+	<artifactId>phresco-pom</artifactId>
+	<version>2.0.0.10001-SNAPSHOT</version>
+	<name>Phresco Pom</name>
+	<url>http://www.phresco.org</url>
+	<description>phresco-Pom</description>
+	
+	<distributionManagement>
+		<site>
+            <id>phresco.pom</id>
+            <name>Phresco POM framework</name>
+            <url>${siteBaseUrl}/phresco-pom/</url>
+        </site>
+	</distributionManagement>
+
+	<dependencies>
+		<dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-json</artifactId>
+            <version>1.9-ea07</version>
+        </dependency>
+         <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.9</version>
+        </dependency>
+		<dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.16</version>
+        </dependency>
+    </dependencies>
+    
+    <build>   
+        <plugins>
+            <plugin>
+                <groupId>org.apache.geronimo.genesis.plugins</groupId>
+                <artifactId>tools-maven-plugin</artifactId>
+                <version>1.1</version>
+                <executions>
+                    <execution>
+                        <id>install-legal-files</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy-legal-files</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    
+</project>
