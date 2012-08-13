@@ -458,6 +458,9 @@ public class PomProcessor {
 	 */
 	public Configuration addConfiguration(String pluginGroupId,String pluginArtifactId, List<Element> configList, boolean overwrite) throws PhrescoPomException {
 		Plugin plugin = getPlugin(pluginGroupId, pluginArtifactId);
+		if (plugin == null) {
+			return null;
+		}
 		Configuration configuration = plugin.getConfiguration();
 		
 		if (configuration == null) {
@@ -469,7 +472,7 @@ public class PomProcessor {
 		} else {			
 			plugin.getConfiguration().getAny().clear();
 			configuration.getAny().addAll(configList);
-			}
+		}
 		return configuration;
 	}
 
