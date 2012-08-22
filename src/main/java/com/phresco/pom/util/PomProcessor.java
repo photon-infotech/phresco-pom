@@ -22,6 +22,7 @@ package com.phresco.pom.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -99,7 +100,19 @@ public class PomProcessor {
 		}
 		file = pomFile;
 	}
-
+	
+	/**
+	 * Instantiates a new pom processor from inputstream.
+	 * @param inputStream
+	 * @throws JAXBException
+	 * @throws IOException
+	 */
+	public PomProcessor(InputStream inputStream) throws JAXBException, IOException {
+        JAXBContext jaxbContext = JAXBContext.newInstance(Model.class);
+        Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+        model = (Model) ((JAXBElement)jaxbUnmarshaller.unmarshal(inputStream)).getValue();
+	}
+	
 	/**
 	 * Adds dependency.
 	 *
