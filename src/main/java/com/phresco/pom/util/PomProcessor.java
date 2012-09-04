@@ -52,6 +52,9 @@ import com.phresco.pom.model.Model.Properties;
 import com.phresco.pom.model.Parent;
 import com.phresco.pom.model.Plugin;
 import com.phresco.pom.model.Plugin.Configuration;
+import com.phresco.pom.model.Plugin.Executions;
+import com.phresco.pom.model.PluginExecution;
+import com.phresco.pom.model.PluginExecution.Goals;
 import com.phresco.pom.model.PluginManagement;
 import com.phresco.pom.model.Profile;
 import com.phresco.pom.model.ReportPlugin;
@@ -489,6 +492,131 @@ public class PomProcessor {
 		}
 		return configuration;
 	}
+	
+	/**
+	 * Adds the execution configuration.
+	 *
+	 * @param pluginGroupId the plugin group id
+	 * @param pluginArtifactId the plugin artifact id
+	 * @param executionId the execution id
+	 * @param phase the phase
+	 * @param goal the goal
+	 * @param configList the config list
+	 * @param overwrite the overwrite
+	 * @param document the document
+	 * @throws PhrescoPomException the phresco pom exception
+	 * @throws ParserConfigurationException the parser configuration exception
+	 */
+	public void addExecutionConfiguration(String pluginGroupId, String pluginArtifactId, String executionId,
+			String phase, String goal, List<Element> configList, boolean overwrite, Document document)
+			throws PhrescoPomException, ParserConfigurationException {
+		Element artifactItems = null;
+		Element artifactItem = null;
+		Plugin plugin = getPlugin(pluginGroupId, pluginArtifactId);
+		if (plugin == null) {
+			plugin = addPlugin(pluginGroupId, pluginArtifactId, "2.3");
+		}
+
+		Executions executions = plugin.getExecutions();
+
+//		if (overwrite) {
+//			executions.getExecution().clear(); // empty the executions
+//		}
+
+		if (executions == null) {
+			executions = new Executions();
+			plugin.setExecutions(executions);
+		}
+		PluginExecution execution = getExecution(executions, executionId, goal);
+		if (overwrite) {
+			execution.getConfiguration().getAny().clear(); // empty the executions
+		}
+
+		if (execution == null) {
+			 execution = new PluginExecution();
+			execution.setId(executionId);
+			execution.setPhase(phase);
+			Goals goals = new Goals();
+			goals.getGoal().add(goal);
+			execution.setGoals(goals);
+		}
+		com.phresco.pom.model.PluginExecution.Configuration configuration = new com.phresco.pom.model.PluginExecution.Configuration();
+		if (execution.getConfiguration() == null) {
+			execution.setConfiguration(configuration);
+		}
+
+		List<Element> configElementList = execution.getConfiguration().getAny();
+		if (configElementList.isEmpty()) {	
+			artifactItems = document.createElement("artifactItems");
+			artifactItem = document.createElement("artifactItem");
+			for (Element configElement : configList) {
+				artifactItem.appendChild(configElement);
+				artifactItems.appendChild(artifactItem);
+			}
+			configuration.getAny().add(artifactItems);
+			execution.setConfiguration(configuration);
+			executions.getExecution().add(execution);
+			plugin.setExecutions(executions);
+		}
+		else {
+			for (Element configElement : configElementList) {
+				if (configElement.getTagName().equals("artifactItems")) {
+					artifactItems = configElement;
+					artifactItem = document.createElement("artifactItem");
+					for (Element configListElement : configList) {
+						artifactItem.appendChild(configListElement);
+					}
+					Element imported = (Element) document.importNode(artifactItems, Boolean.TRUE);
+					imported.appendChild(artifactItem);
+					configuration.getAny().add(imported);
+					execution.setConfiguration(configuration);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Gets the execution.
+	 *
+	 * @param executions the executions
+	 * @param executionId the execution id
+	 * @param goal the goal
+	 * @return the execution
+	 */
+	private PluginExecution getExecution(Executions executions, String executionId, String goal) {
+		if (executions.getExecution() != null) {
+			for (PluginExecution pluginExecution : executions.getExecution()) {
+				if (pluginExecution != null && pluginExecution.getId().equals(executionId) && isGoalFound(pluginExecution, goal)) {
+					return pluginExecution;
+				}
+
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Checks if is goal found.
+	 *
+	 * @param pluginExecution the plugin execution
+	 * @param name the name
+	 * @return true, if is goal found
+	 */
+	private boolean isGoalFound(PluginExecution pluginExecution, String name) {
+		Goals goals = pluginExecution.getGoals();
+		if (goals == null) {
+			goals = new Goals();
+			goals.getGoal().add(name);
+			pluginExecution.setGoals(goals);
+			return true;
+		}
+		for (String goal : goals.getGoal()) {
+			if (goal != null && goal.equals(name)) {
+				return true;
+			}
+		}
+		return false;
+	} 
 
 	/**
 	 * Gets the plugin configuration value.
