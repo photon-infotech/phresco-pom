@@ -21,7 +21,6 @@ package com.phresco.pom.util;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -33,7 +32,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import com.phresco.pom.android.AndroidProfile;
 import com.phresco.pom.exception.PhrescoPomException;
-import com.phresco.pom.model.Activation;
 import com.phresco.pom.model.BuildBase;
 import com.phresco.pom.model.BuildBase.Plugins;
 import com.phresco.pom.model.Plugin;
@@ -132,10 +130,10 @@ public class AndroidPomProcessor extends PomProcessor {
 	 * @param profileId
 	 */
 	private void removeProfile(String profileId) {
-		if(model.getProfiles()!= null) {
-			for(Profile profile : model.getProfiles().getProfile()) {
+		if(getModel().getProfiles()!= null) {
+			for(Profile profile : getModel().getProfiles().getProfile()) {
 				if(profileId.equals(profile.getId())) {
-					model.getProfiles().getProfile().remove(profile);
+					getModel().getProfiles().getProfile().remove(profile);
 					return;
 				}	 
 			}
@@ -167,12 +165,12 @@ public class AndroidPomProcessor extends PomProcessor {
 	 * @return
 	 */
 	public boolean hasSigning() {
-		if(model.getProfiles() !=null && model.getProfiles().getProfile() != null){
-			for(Profile profile : model.getProfiles().getProfile()){
+		if(getModel().getProfiles() !=null && getModel().getProfiles().getProfile() != null){
+			for(Profile profile : getModel().getProfiles().getProfile()){
 				List<Plugin> plugin = profile.getBuild().getPlugins().getPlugin();
 				for (Plugin plugin2 : plugin) {
 					List<PluginExecution> execution = plugin2.getExecutions().getExecution();
-					if(getSigningProfilePlugin(profile, execution)!=""){
+					if(getSigningProfilePlugin(profile, execution).equals("")){
 						return true;
 					}
 				}
@@ -226,8 +224,8 @@ public class AndroidPomProcessor extends PomProcessor {
 	 * @return
 	 */
 	public String getSigningProfile() {
-		if(model.getProfiles() != null && model.getProfiles().getProfile() != null) {
-			for(Profile profile : model.getProfiles().getProfile()){
+		if(getModel().getProfiles() != null && getModel().getProfiles().getProfile() != null) {
+			for(Profile profile : getModel().getProfiles().getProfile()){
 				List<Plugin> plugin = profile.getBuild().getPlugins().getPlugin();
 				for (Plugin plugin2 : plugin) {
 					List<PluginExecution> execution = plugin2.getExecutions().getExecution();
@@ -246,7 +244,7 @@ public class AndroidPomProcessor extends PomProcessor {
 	 * @return
 	 */
 	private String getSigningProfilePlugin(Profile profile,	List<PluginExecution> execution) {
-		if(model.getProfiles() != null && model.getProfiles().getProfile() != null) {
+		if(getModel().getProfiles() != null && getModel().getProfiles().getProfile() != null) {
 			for (PluginExecution pluginExecution : execution) {
 				if(pluginExecution.getConfiguration() != null){
 				List<Element> any = pluginExecution.getConfiguration().getAny();

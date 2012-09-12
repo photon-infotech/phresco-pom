@@ -44,15 +44,12 @@ public class SiteConfigurator {
 	private static final Logger LOGGER = Logger.getLogger(SiteConfigurator.class);
 
 	/**
-	 * 
-	 */
-	private ReportPlugin reportPlugin = null;
-	/**
 	 * @param iterateReport
 	 * @param file
 	 * @return
 	 */
 	public ReportPlugin addReportPlugin(List<Reports> report, List<ReportCategories> reportCategories, File file) {
+		ReportPlugin reportPlugin = null;
 		try {
 			PomProcessor processor = new PomProcessor(file);
 			if(processor.getSitePlugin(PomConstants.SITE_PLUGIN_ARTIFACT_ID) == null) {
@@ -75,15 +72,8 @@ public class SiteConfigurator {
 					ReportSets reportSets = reportPlugin.getReportSets();
 					ReportSet reportSet = new ReportSet();
 					com.phresco.pom.model.ReportSet.Reports repo = new com.phresco.pom.model.ReportSet.Reports();
-					if(reportSets == null){
-						reportPlugin.setReportSets(new ReportSets());
-						if(reportCategories != null){
-							for (ReportCategories reportCategories2 : reportCategories) {
-								reportSet.setReports(repo);		
-								reportSet.getReports().getReport().add(reportCategories2.getName());
-							} reportPlugin.getReportSets().getReportSet().add(reportSet);
-						} 
-					}
+					setReportSet(reportCategories, reportPlugin, reportSets,
+							reportSet, repo);
 				}
 				processor.siteReportConfig(reportPlugin);
 			}
@@ -96,6 +86,20 @@ public class SiteConfigurator {
 			LOGGER.debug(e);
 		}
 		return reportPlugin;
+	}
+
+	private void setReportSet(List<ReportCategories> reportCategories,
+			ReportPlugin reportPlugin, ReportSets reportSets,
+			ReportSet reportSet, com.phresco.pom.model.ReportSet.Reports repo) {
+		if(reportSets == null){
+			reportPlugin.setReportSets(new ReportSets());
+			if(reportCategories != null){
+				for (ReportCategories reportCategories2 : reportCategories) {
+					reportSet.setReports(repo);		
+					reportSet.getReports().getReport().add(reportCategories2.getName());
+				} reportPlugin.getReportSets().getReportSet().add(reportSet);
+			} 
+		}
 	}
 
 	/**
@@ -169,9 +173,7 @@ public class SiteConfigurator {
 			processor.removeProjectInfoReportCategory(reportCategories);
 			processor.save();
 		} catch (JAXBException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 }

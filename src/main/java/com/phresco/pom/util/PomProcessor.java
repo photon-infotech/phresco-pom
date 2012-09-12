@@ -81,10 +81,10 @@ import com.phresco.pom.site.Reports;
 public class PomProcessor {
 
 	/** The model. */
-	protected Model model;
+	private Model model;
 
 	/** The file. */
-	protected File file;
+	private File file;
 
 	/**
 	 * Instantiates a new pom processor.
@@ -181,7 +181,7 @@ public class PomProcessor {
 	 * @throws PhrescoPomException
 	 */
 	public boolean isDependencyAvailable(String groupId,String artifactId) throws PhrescoPomException{
-		if(model.getDependencies()==null){
+		if(model.getDependencies()==null) {
 			return false;
 		}
 		List<Dependency> list = model.getDependencies().getDependency();
@@ -322,10 +322,9 @@ public class PomProcessor {
 		List<Plugin> pluginList = plugins.getPlugin();
 		for (Plugin plugin : pluginList) {
 			if (plugin.getGroupId().equals(groupId) && plugin.getArtifactId().equals(artifactId)) {
-				if (plugin.getDependencies() != null) {
-					plugin.setDependencies(null);
-					isFound = true;
-				}
+				isFound = true;
+			} if (plugin.getDependencies() != null) {
+				plugin.setDependencies(null);
 			}
 		}
 		return isFound;
@@ -510,18 +509,12 @@ public class PomProcessor {
 	public void addExecutionConfiguration(String pluginGroupId, String pluginArtifactId, String executionId,
 			String phase, String goal, List<Element> configList, boolean overwrite, Document document)
 			throws PhrescoPomException, ParserConfigurationException {
-		Element artifactItems = null;
-		Element artifactItem = null;
 		Plugin plugin = getPlugin(pluginGroupId, pluginArtifactId);
 		if (plugin == null) {
 			plugin = addPlugin(pluginGroupId, pluginArtifactId, "2.3");
 		}
 
 		Executions executions = plugin.getExecutions();
-
-//		if (overwrite) {
-//			executions.getExecution().clear(); // empty the executions
-//		}
 
 		if (executions == null) {
 			executions = new Executions();
@@ -547,32 +540,52 @@ public class PomProcessor {
 
 		List<Element> configElementList = execution.getConfiguration().getAny();
 		if (configElementList.isEmpty()) {	
-			artifactItems = document.createElement("artifactItems");
-			artifactItem = document.createElement("artifactItem");
-			for (Element configElement : configList) {
-				artifactItem.appendChild(configElement);
-				artifactItems.appendChild(artifactItem);
-			}
-			configuration.getAny().add(artifactItems);
-			execution.setConfiguration(configuration);
-			executions.getExecution().add(execution);
-			plugin.setExecutions(executions);
+			createArtifactItems(configList, document, plugin, executions,
+					execution, configuration);
 		}
 		else {
-			for (Element configElement : configElementList) {
-				if (configElement.getTagName().equals("artifactItems")) {
-					artifactItems = configElement;
-					artifactItem = document.createElement("artifactItem");
-					for (Element configListElement : configList) {
-						artifactItem.appendChild(configListElement);
-					}
-					Element imported = (Element) document.importNode(artifactItems, Boolean.TRUE);
-					imported.appendChild(artifactItem);
-					configuration.getAny().add(imported);
-					execution.setConfiguration(configuration);
+			addArtifactItem(configList, document, execution, configuration,
+					configElementList);
+		}
+	}
+
+	private void addArtifactItem(List<Element> configList, Document document,
+			PluginExecution execution,
+			com.phresco.pom.model.PluginExecution.Configuration configuration,
+			List<Element> configElementList) {
+		Element artifactItems;
+		Element artifactItem;
+		for (Element configElement : configElementList) {
+			if (configElement.getTagName().equals("artifactItems")) {
+				artifactItems = configElement;
+				artifactItem = document.createElement("artifactItem");
+				for (Element configListElement : configList) {
+					artifactItem.appendChild(configListElement);
 				}
+				Element imported = (Element) document.importNode(artifactItems, Boolean.TRUE);
+				imported.appendChild(artifactItem);
+				configuration.getAny().add(imported);
+				execution.setConfiguration(configuration);
 			}
 		}
+	}
+
+	private void createArtifactItems(List<Element> configList,
+			Document document, Plugin plugin, Executions executions,
+			PluginExecution execution,
+			com.phresco.pom.model.PluginExecution.Configuration configuration) {
+		Element artifactItems;
+		Element artifactItem;
+		artifactItems = document.createElement("artifactItems");
+		artifactItem = document.createElement("artifactItem");
+		for (Element configElement : configList) {
+			artifactItem.appendChild(configElement);
+			artifactItems.appendChild(artifactItem);
+		}
+		configuration.getAny().add(artifactItems);
+		execution.setConfiguration(configuration);
+		executions.getExecution().add(execution);
+		plugin.setExecutions(executions);
 	}
 	
 	/**
@@ -857,6 +870,26 @@ public class PomProcessor {
 	 * @throws PhrescoPomException the phresco pom exception
 	 */
 	public Profile addProfile(String id,BuildBase build,com.phresco.pom.model.Profile.Modules modules) throws PhrescoPomException {
+		Profile profile = createProfiles(id);
+		profile.setId(id);		
+		profile.setBuild(build);
+		profile.setModules(modules);
+		model.getProfiles().getProfile().add(profile);
+		return profile;
+	}
+	
+	public static void main(String[] args) throws JAXBException, IOException, PhrescoPomException {
+		PomProcessor p = new PomProcessor(new File("D:\\pom\\pom.xml"));
+		BuildBase build = new BuildBase();
+		build.setFinalName("FinalName");
+		build.setDirectory("Directory");
+		com.phresco.pom.model.Profile.Modules modules = new com.phresco.pom.model.Profile.Modules();
+		modules.getModule().add("Module");
+		p.addProfile("profile",build,modules);
+		p.save();
+	}
+
+	private Profile createProfiles(String id) {
 		Profiles profiles = model.getProfiles();
 		if(profiles ==null) {
 			profiles = new Profiles();
@@ -870,11 +903,6 @@ public class PomProcessor {
 				break;
 			}
 		}
-		
-		profile.setId(id);		
-		profile.setBuild(build);
-		profile.setModules(modules);
-		model.getProfiles().getProfile().add(profile);
 		return profile;
 	}
 
@@ -886,19 +914,7 @@ public class PomProcessor {
 	 * @throws PhrescoPomException the phresco pom exception
 	 */
 	public Profile addProfile(String id) throws PhrescoPomException {
-		Profiles profiles = model.getProfiles();
-		if(profiles ==null) {
-			profiles = new Profiles();
-			model.setProfiles(profiles);
-		} 
-		Profile profile = new Profile();
-		for(Profile tmpProfile : model.getProfiles().getProfile()){
-			if(tmpProfile.getId().equals(id)){
-				profile = tmpProfile;
-				break;
-			}
-		}
-		
+		Profile profile = createProfiles(id);
 		profile.setId(id);	
 		model.getProfiles().getProfile().add(profile);
 		return profile;

@@ -81,5 +81,6 @@
 		<junit.version>4.9</junit.version>
 		<log4j.version>1.2.16</log4j.version>
 		<tools-maven-plugin.version>1.1</tools-maven-plugin.version>
+		<sonar.exclusions>com/phresco/pom/model/*.java</sonar.exclusions>
     </properties>
 </project>

@@ -19,8 +19,9 @@
  */
 package com.phresco.pom.util;
 
-public class POMErrorCode {
+public final class POMErrorCode {
 	
+	private static int codeValue;
 	private int code;
 	
 	private String message;
@@ -43,25 +44,25 @@ public class POMErrorCode {
 		this.message = message;
 	}
 
-	public static POMErrorCode DEPENDENCY_NOT_FOUND = new POMErrorCode(101, "DEPENDENCY NOT AVAILABLE"); 
+	public static final POMErrorCode DEPENDENCY_NOT_FOUND = new POMErrorCode(codeValue, "DEPENDENCY NOT AVAILABLE"); 
 
-	public static POMErrorCode MODULE_NOT_FOUND = new POMErrorCode(102, "MODULE NOT AVAILABLE");
+	public static final POMErrorCode MODULE_NOT_FOUND = new POMErrorCode(codeValue, "MODULE NOT AVAILABLE");
 	
-	public static POMErrorCode BUILD_NOT_FOUND = new POMErrorCode(103, "BUILD NOT AVAILABLE");
+	public static final POMErrorCode BUILD_NOT_FOUND = new POMErrorCode(codeValue, "BUILD NOT AVAILABLE");
 	
-	public static POMErrorCode PLUGIN_NOT_FOUND = new POMErrorCode(104, "PLUGIN NOT AVAILABLE");
+	public static final POMErrorCode PLUGIN_NOT_FOUND = new POMErrorCode(codeValue, "PLUGIN NOT AVAILABLE");
 	
-	public static POMErrorCode PROPERTY_NOT_FOUND = new POMErrorCode(105, "PROPERTY NOT AVAILABLE");
+	public static final POMErrorCode PROPERTY_NOT_FOUND = new POMErrorCode(codeValue, "PROPERTY NOT AVAILABLE");
 	
-	public static POMErrorCode SOURCE_DIRECTORY_NOT_FOUND = new POMErrorCode(106, "SOURCE DIRECTORY NOT AVAILABLE");
+	public static final POMErrorCode SOURCE_DIRECTORY_NOT_FOUND = new POMErrorCode(codeValue, "SOURCE DIRECTORY NOT AVAILABLE");
 	
-	public static POMErrorCode PROFILE_NOT_FOUND = new POMErrorCode(107, "PROFILE NOT AVAILABLE");
+	public static final POMErrorCode PROFILE_NOT_FOUND = new POMErrorCode(codeValue, "PROFILE NOT AVAILABLE");
 	
-	public static POMErrorCode KEYSTORE_NOT_FOUND = new POMErrorCode(108, "KEYSTORE VALUE NOT AVAILABLE");
+	public static final POMErrorCode KEYSTORE_NOT_FOUND = new POMErrorCode(codeValue, "KEYSTORE VALUE NOT AVAILABLE");
 	
-	public static POMErrorCode PROFILE_ID_NOT_FOUND = new POMErrorCode(109, "PROFILE ID NOT AVAILABLE");
+	public static final POMErrorCode PROFILE_ID_NOT_FOUND = new POMErrorCode(codeValue, "PROFILE ID NOT AVAILABLE");
 	
-	public static POMErrorCode MODULE_EXIST = new POMErrorCode(110, "MODULE ALREADY EXIST");
+	public static final POMErrorCode MODULE_EXIST = new POMErrorCode(codeValue, "MODULE ALREADY EXIST");
 	
-	public static POMErrorCode PROFILE_ID_EXIST = new POMErrorCode(110, "PROFILE ID ALREADY EXIST");
+	public static final POMErrorCode PROFILE_ID_EXIST = new POMErrorCode(codeValue, "PROFILE ID ALREADY EXIST");
 }

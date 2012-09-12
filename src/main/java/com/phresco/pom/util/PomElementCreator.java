@@ -22,12 +22,10 @@ package com.phresco.pom.util;
 import com.phresco.pom.model.Activation;
 import com.phresco.pom.model.BuildBase;
 
-public class PomElementCreator {
+public final class PomElementCreator {
 	
 	private PomElementCreator() {
-		
 	}
-	
 	/**
 	 * @param defaultgoal
 	 * @param directory
@@ -56,7 +54,7 @@ public class PomElementCreator {
 	 * @param module
 	 * @return
 	 */
-	private static com.phresco.pom.model.Profile.Modules createProfileModule(String module) {
+	public static com.phresco.pom.model.Profile.Modules createProfileModule(String module) {
 		com.phresco.pom.model.Profile.Modules modules = new com.phresco.pom.model.Profile.Modules();
 		modules.getModule().add(module);
 		return modules;
