@@ -19,7 +19,10 @@ public class Reports implements Serializable{
 	
 	private boolean enabled=false;
 	
-
+	private List<ReportCategories> reportCategories;
+	
+	private String techId;
+	
 	public Reports(String displayName, String artifactId, String groupId,
 			String version) {
 		super();
@@ -37,8 +40,6 @@ public class Reports implements Serializable{
 		this.reportCategories = reportCategories;
 	}
 
-	private List<ReportCategories> reportCategories;
-	
 	/**
 	 * @return the enabled
 	 */
@@ -94,6 +95,15 @@ public class Reports implements Serializable{
 
 	public void setVersion(String version) {
 		this.version = version;
+	}
+
+	public String getTechId() {
+		return techId;
+	}
+
+
+	public void setTechId(String techId) {
+		this.techId = techId;
 	}
 
 	public static final Reports SUREFIRE_REPORT = new Reports(
