@@ -23,69 +23,60 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.xml.bind.JAXBException;
-import junit.framework.Assert;
 
+import junit.framework.Assert;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 import com.phresco.pom.exception.PhrescoPomException;
 import com.phresco.pom.util.POMErrorCode;
 import com.phresco.pom.util.PomProcessor;
 
-public class PomProcessorChangePluginVersionTest {
 
+public class DeleteDependencyTest {
+	
 	@Before
-	public void prepare() throws IOException{
-		File file = new File("pomTest.xml");
-		if(file.exists()) {
-			file.delete();
+	public void prepare() throws PhrescoPomException{
+		AddDependencyTest addTest = new AddDependencyTest();
+		addTest.prepare();
+	}
+	
+	@Test
+	public void validDelete(){
+		try {
+			PomProcessor processor = new PomProcessor(new File("pomTest.xml"));
+			processor.deleteDependency("com.suresh.marimuthu", "artifact");
+			processor.save();
+			Assert.assertEquals(2, processor.getModel().getDependencies().getDependency().size());
+		} catch (JAXBException e) {
+			Assert.fail("Delete Failed!");
+		} catch (IOException e) {
+			Assert.fail("Delete Failed!");
+		} catch (PhrescoPomException e) {
+			Assert.fail("Delete failed!");
 		}
 	}
 	
 	@Test
-	public void validchangePluginVersion() {
+	public void invalidDelete(){
 		try {
 			PomProcessor processor = new PomProcessor(new File("pomTest.xml"));
-			processor.addPlugin("photon", "phresco", "1.2.2");
-			processor.addPlugin("phresco", "photon", "1.2");
-			processor.changePluginVersion("phresco", "photon", "2.2.2");
+			processor.deleteDependency("invalid", "invalid");
 			processor.save();
-			String actual = processor.getModel().getBuild().getPlugins().getPlugin().get(1).getVersion();
-			String expected = "2.2.2";
-			Assert.assertEquals(actual,expected);
-		} catch (IOException e) {
-			Assert.fail("Get Plugin Failed!");
 		} catch (JAXBException e) {
-		    Assert.fail("Get Plugin Failed!");
-		} catch (PhrescoPomException e) {
-			Assert.fail("Get Plugin Failed!");
-		}
-	}
-	
-	@Test
-	public void invalidchangePluginVersion() {
-		try {
-			PomProcessor processor = new PomProcessor(new File("pomTest.xml"));
-			processor.addPlugin("photon", "phresco", "1.2.2");
-			processor.addPlugin("phresco", "photon", "1.2");
-			processor.changePluginVersion("invalid", "photon", "2.2.2");
-			processor.save();
+			Assert.fail("Delete failed!");
 		} catch (IOException e) {
-			Assert.fail("Get Plugin Failed!");
-		} catch (JAXBException e) {
-		    Assert.fail("Get Plugin Failed!");
+			Assert.fail("Delete failed!");
 		} catch (PhrescoPomException e) {
-			Assert.assertTrue(e.getErrorCode() == POMErrorCode.PLUGIN_NOT_FOUND);
+			Assert.assertTrue(e.getErrorCode()== POMErrorCode.DEPENDENCY_NOT_FOUND);
 		}
 	}
 	
 	@After
 	public void delete(){
-		File file = new File("pomTest.xml");
+		File file = new File("pomdeletedep.xml");
 		if(file.exists()) {
 			file.delete();
 		}
 	}
-	
 }

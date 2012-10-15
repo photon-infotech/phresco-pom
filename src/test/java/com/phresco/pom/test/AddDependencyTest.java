@@ -33,49 +33,41 @@ import org.junit.Test;
 import com.phresco.pom.exception.PhrescoPomException;
 import com.phresco.pom.util.PomProcessor;
 
-public class PomProcessorChangeDependencyVersionTest {
+public class AddDependencyTest {
 
 	@Before
-	public void prepare() throws PhrescoPomException {
-		PomProcessorAddDependencyTest addTest = new PomProcessorAddDependencyTest();
-		addTest.prepare();
-	}
-
-	@Test
-	public void validChangeDependencyVersion() {
+	public void prepare() {
+		
 		try {
-			PomProcessor processor = new PomProcessor(new File("pomTest.xml"));
-			processor.changeDependencyVersion("com.suresh.marimuthu", "artifact","2.2.2");
+			File file = new File("pomTest.xml");
+			if(file.exists()) {
+				file.delete();
+			}
+			PomProcessor processor = new PomProcessor(file);
+			processor.addDependency("com.suresh.marimuthu", "artifact" ,"2.3");
+			processor.addDependency("com.suresh.marimuthu1", "artifact1" ,"2.3");
+			processor.addDependency("com.suresh.marimuthu2", "artifact2" ,"2.3");
 			processor.save();
-			String actual = processor.getModel().getDependencies().getDependency().get(0).getVersion();
-			String expected = "2.2.2";
-			Assert.assertEquals(expected, actual);
-
 		} catch (JAXBException e) {
-			Assert.fail("Change Version Failed!");
 		} catch (IOException e) {
-			Assert.fail("Change Version Failed!");
 		} catch (PhrescoPomException e) {
-			Assert.fail("Change Version Failed!");
+			e.printStackTrace();
 		}
 	}
-
+	
 	@Test
-	public void invalidChangeDependencyVersion() {
+	public void validAddDependency() throws PhrescoPomException{
 		try {
 			PomProcessor processor = new PomProcessor(new File("pomTest.xml"));
-			processor.changeDependencyVersion("com.photon.invalid", "artifact","2.2");
+			processor.addDependency("com.photon.phresco", "artifact","4.1.1");
 			processor.save();
-			Assert.assertTrue("Invalid Dependency values", true);
+			Assert.assertEquals(4, processor.getModel().getDependencies().getDependency().size());
 		} catch (JAXBException e) {
-			Assert.fail("Change Version Failed!");
+			Assert.fail("Add Dependency Failed!");
 		} catch (IOException e) {
-			Assert.fail("Change Version Failed!");
-		} catch (PhrescoPomException e) {
-			
+			Assert.fail("Add Dependency Failed!");
 		}
 	}
-
 	@After
 	public void delete(){
 		File file = new File("pomTest.xml");

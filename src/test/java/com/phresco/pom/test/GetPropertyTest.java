@@ -35,7 +35,7 @@ import com.phresco.pom.exception.PhrescoPomException;
 import com.phresco.pom.util.POMErrorCode;
 import com.phresco.pom.util.PomProcessor;
 
-public class PomProcessorGetPropertyTest {
+public class GetPropertyTest {
 
 	@Before
 	public void prepare() throws IOException{

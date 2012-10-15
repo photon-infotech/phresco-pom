@@ -37,7 +37,7 @@ public class RemoveAllDependencyTest {
 
 	@Before
 	public void prepare() {
-		PomProcessorAddDependencyTest addTest = new PomProcessorAddDependencyTest();
+		AddDependencyTest addTest = new AddDependencyTest();
 		addTest.prepare();
 	}
 

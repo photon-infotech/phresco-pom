@@ -24,21 +24,29 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ PomProcessorAddDependencyTest.class,
-	PomProcessorAddModulesTest.class,
-	PomProcessorAddPluginTest.class,
-	PomProcessorAddPropertiesTest.class,
-	PomProcessorChangeDependencyVersionTest.class,
-	PomProcessorChangeDependencyVersionTest.class,
-	PomProcessorDeleteDependencyTest.class,
-	PomProcessorGetModelTest.class,
-	PomProcessorGetPluginTest.class,
-	PomProcessorRemoveModuleTest.class,
+@SuiteClasses({ AddDependencyTest.class,
+	AddModulesTest.class,
+	AddPluginTest.class,
+	AddPropertiesTest.class,
+	ChangeDependencyVersionTest.class,
+	ChangeDependencyVersionTest.class,
+	DeleteDependencyTest.class,
+	GetModelTest.class,
+	GetPluginTest.class,
+	RemoveModuleTest.class,
 	RemoveAllDependencyTest.class, 
 	GetModulesTest.class,
-	PomProcessorGetPropertyTest.class,
-	PomProcessorChangePluginVersionTest.class,
-	PomProcessorAddProfileTest.class}
+	GetPropertyTest.class,
+	ChangePluginVersionTest.class,
+	AddProfileTest.class,
+	DependencySystemPathTest.class, 
+	DeletePluginTest.class,
+	AddExecutionConfigurationTest.class,
+	GetPluginConfigurationValueTest.class,
+	AddPluginDependencyTest.class,
+	SetSourceDirectoryTest.class,
+	SetSCMTest.class,
+	AndroidPomProcessorTest.class}
 	 )
 public class AllTests {
 

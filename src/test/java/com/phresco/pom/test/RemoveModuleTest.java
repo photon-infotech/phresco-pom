@@ -23,7 +23,6 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.xml.bind.JAXBException;
-import javax.xml.parsers.ParserConfigurationException;
 
 import junit.framework.Assert;
 
@@ -32,33 +31,56 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.phresco.pom.exception.PhrescoPomException;
+import com.phresco.pom.util.POMErrorCode;
 import com.phresco.pom.util.PomProcessor;
 
-public class PomProcessorAddPluginTest {
-	
+public class RemoveModuleTest {
+
 	@Before
-	public void prepare() throws IOException {
+	public void prepare() throws IOException, JAXBException {
 		File file = new File("pomTest.xml");
 		if(file.exists()) {
 			file.delete();
+		}		
+	}
+
+	@Test
+	public void validRemoveModule() {
+		try {
+			PomProcessor processor = new PomProcessor(new File("pomTest.xml"));
+			processor.addModule("photon");
+			processor.addModule("phresco");
+			processor.removeModule("phresco");
+			processor.save();
+			int actual = processor.getModel().getModules().getModule().size(); 
+			int expected = 1;
+			Assert.assertEquals(actual,expected);
+		} catch (JAXBException e) {
+			Assert.fail("Remove Module Failed!");
+		} catch (IOException e) {
+			Assert.fail("Remove Module Failed!");
+		} catch(PhrescoPomException ph){
+			Assert.fail("Remove Module Failed!");
 		}
 	}
 	
 	@Test
-	public void validAddPlugin() throws ParserConfigurationException, PhrescoPomException {
+	public void invalidRemoveModule() {
 		try {
 			PomProcessor processor = new PomProcessor(new File("pomTest.xml"));
-			processor.addPlugin("phresco", "photon","2.2");
-			processor.addPlugin("Suresh", "marimuthu","1.1");
+			processor.addModule("photon");
+			processor.addModule("phresco");
+			processor.removeModule("DLF");
 			processor.save();
-			Assert.assertEquals(2, processor.getModel().getBuild().getPlugins().getPlugin().size());
 		} catch (JAXBException e) {
-			Assert.fail("Add Plugin Failed!");
+			Assert.fail("Remove Module Failed!");
 		} catch (IOException e) {
-			Assert.fail("Add Plugin Failed!");
+			Assert.fail("Remove Module Failed!");
+		} catch(PhrescoPomException ph){
+			Assert.assertTrue(ph.getErrorCode() == POMErrorCode.MODULE_NOT_FOUND);
 		}
 	}
-	
+
 	@After
 	public void delete() {
 		File file = new File("pomTest.xml");

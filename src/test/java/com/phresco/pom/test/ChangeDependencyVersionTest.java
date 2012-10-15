@@ -33,33 +33,51 @@ import org.junit.Test;
 import com.phresco.pom.exception.PhrescoPomException;
 import com.phresco.pom.util.PomProcessor;
 
-public class PomProcessorAddModulesTest {
+public class ChangeDependencyVersionTest {
 
 	@Before
-	public void prepare() throws IOException {
-		File file = new File("pomTest.xml");
-		if(file.exists()) {
-			file.delete();
-		}
+	public void prepare() throws PhrescoPomException {
+		AddDependencyTest addTest = new AddDependencyTest();
+		addTest.prepare();
 	}
-	
+
 	@Test
-	public void validAddModules() throws ArrayIndexOutOfBoundsException, PhrescoPomException{
+	public void validChangeDependencyVersion() {
 		try {
 			PomProcessor processor = new PomProcessor(new File("pomTest.xml"));
-			processor.addModule("Phresco");
-			processor.addModule("Photon");
+			processor.changeDependencyVersion("com.suresh.marimuthu", "artifact","2.2.2");
 			processor.save();
-			Assert.assertEquals(2, processor.getModel().getModules().getModule().size());
+			String actual = processor.getModel().getDependencies().getDependency().get(0).getVersion();
+			String expected = "2.2.2";
+			Assert.assertEquals(expected, actual);
+
 		} catch (JAXBException e) {
-			Assert.fail("Add Plugin Failed!");
+			Assert.fail("Change Version Failed!");
 		} catch (IOException e) {
-			Assert.fail("Add Plugin Failed!");
+			Assert.fail("Change Version Failed!");
+		} catch (PhrescoPomException e) {
+			Assert.fail("Change Version Failed!");
 		}
 	}
-	
+
+	@Test
+	public void invalidChangeDependencyVersion() {
+		try {
+			PomProcessor processor = new PomProcessor(new File("pomTest.xml"));
+			processor.changeDependencyVersion("com.photon.invalid", "artifact","2.2");
+			processor.save();
+			Assert.assertTrue("Invalid Dependency values", true);
+		} catch (JAXBException e) {
+			Assert.fail("Change Version Failed!");
+		} catch (IOException e) {
+			Assert.fail("Change Version Failed!");
+		} catch (PhrescoPomException e) {
+			
+		}
+	}
+
 	@After
-	public void delete() {
+	public void delete(){
 		File file = new File("pomTest.xml");
 		if(file.exists()) {
 			file.delete();
