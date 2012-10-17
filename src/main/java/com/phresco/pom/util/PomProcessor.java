@@ -49,6 +49,7 @@ import com.phresco.pom.model.Model.Dependencies;
 import com.phresco.pom.model.Model.Modules;
 import com.phresco.pom.model.Model.Profiles;
 import com.phresco.pom.model.Model.Properties;
+import com.phresco.pom.model.Model.Repositories;
 import com.phresco.pom.model.Parent;
 import com.phresco.pom.model.Plugin;
 import com.phresco.pom.model.Plugin.Configuration;
@@ -60,6 +61,7 @@ import com.phresco.pom.model.Profile;
 import com.phresco.pom.model.ReportPlugin;
 import com.phresco.pom.model.ReportSet;
 import com.phresco.pom.model.Reporting;
+import com.phresco.pom.model.Repository;
 import com.phresco.pom.model.Scm;
 import com.phresco.pom.site.ReportCategories;
 import com.phresco.pom.site.Reports;
@@ -1227,6 +1229,16 @@ public class PomProcessor {
 			}			
 			model.setScm(scm);
 		}
+	}
+	
+	public void addRepositories(String repoId, String repoURL) {
+		if(model.getRepositories() == null) {
+			model.setRepositories(new Repositories());
+		}
+		Repository repository = new Repository();
+		repository.setId(repoId);
+		repository.setUrl(repoURL);
+		model.getRepositories().getRepository().add(repository);
 	}
 	
 	/**
