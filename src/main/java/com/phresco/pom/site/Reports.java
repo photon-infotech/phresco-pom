@@ -9,6 +9,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement 
 public class Reports implements Serializable{
 	
+	private String id;
+	
 	private String displayName = "";
 	
 	private String artifactId ="";
@@ -104,6 +106,15 @@ public class Reports implements Serializable{
 
 	public void setTechId(String techId) {
 		this.techId = techId;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+
+	public String getId() {
+		return id;
 	}
 
 	public static final Reports SUREFIRE_REPORT = new Reports(
