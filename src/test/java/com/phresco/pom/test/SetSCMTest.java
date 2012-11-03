@@ -3,7 +3,6 @@ package com.phresco.pom.test;
 import java.io.File;
 import java.io.IOException;
 
-import javax.xml.bind.JAXBException;
 
 import junit.framework.Assert;
 
@@ -25,16 +24,12 @@ public class SetSCMTest {
 	}
 	
 	@Test
-	public void setSCMTest() throws ArrayIndexOutOfBoundsException, PhrescoPomException{
-		try {
+	public void setSCMTest() throws PhrescoPomException {
 			PomProcessor processor = new PomProcessor(new File("pomTest.xml"));
 			processor.setSCM("test", "test", "http://localhost:8080", "phresco");
 			processor.save();
 			String tag = processor.getModel().getScm().getTag();
 			Assert.assertEquals(tag,"phresco");
-		} catch (JAXBException e) {
-		} catch (IOException e) {
-		}
 	}
 	
 	@After

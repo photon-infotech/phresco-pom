@@ -20,9 +20,6 @@
 package com.phresco.pom.test;
 
 import java.io.File;
-import java.io.IOException;
-
-import javax.xml.bind.JAXBException;
 
 import junit.framework.Assert;
 
@@ -37,7 +34,7 @@ import com.phresco.pom.util.PomProcessor;
 public class RemoveModuleTest {
 
 	@Before
-	public void prepare() throws IOException, JAXBException {
+	public void prepare() {
 		File file = new File("pomTest.xml");
 		if(file.exists()) {
 			file.delete();
@@ -55,10 +52,6 @@ public class RemoveModuleTest {
 			int actual = processor.getModel().getModules().getModule().size(); 
 			int expected = 1;
 			Assert.assertEquals(actual,expected);
-		} catch (JAXBException e) {
-			Assert.fail("Remove Module Failed!");
-		} catch (IOException e) {
-			Assert.fail("Remove Module Failed!");
 		} catch(PhrescoPomException ph){
 			Assert.fail("Remove Module Failed!");
 		}
@@ -72,10 +65,6 @@ public class RemoveModuleTest {
 			processor.addModule("phresco");
 			processor.removeModule("DLF");
 			processor.save();
-		} catch (JAXBException e) {
-			Assert.fail("Remove Module Failed!");
-		} catch (IOException e) {
-			Assert.fail("Remove Module Failed!");
 		} catch(PhrescoPomException ph){
 			Assert.assertTrue(ph.getErrorCode() == POMErrorCode.MODULE_NOT_FOUND);
 		}

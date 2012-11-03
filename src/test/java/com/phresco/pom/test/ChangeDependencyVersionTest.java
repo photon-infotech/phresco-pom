@@ -20,9 +20,6 @@
 package com.phresco.pom.test;
 
 import java.io.File;
-import java.io.IOException;
-
-import javax.xml.bind.JAXBException;
 
 import junit.framework.Assert;
 
@@ -42,8 +39,7 @@ public class ChangeDependencyVersionTest {
 	}
 
 	@Test
-	public void validChangeDependencyVersion() {
-		try {
+	public void validChangeDependencyVersion() throws PhrescoPomException {
 			PomProcessor processor = new PomProcessor(new File("pomTest.xml"));
 			processor.changeDependencyVersion("com.suresh.marimuthu", "artifact","2.2.2");
 			processor.save();
@@ -51,29 +47,14 @@ public class ChangeDependencyVersionTest {
 			String expected = "2.2.2";
 			Assert.assertEquals(expected, actual);
 
-		} catch (JAXBException e) {
-			Assert.fail("Change Version Failed!");
-		} catch (IOException e) {
-			Assert.fail("Change Version Failed!");
-		} catch (PhrescoPomException e) {
-			Assert.fail("Change Version Failed!");
-		}
 	}
 
 	@Test
-	public void invalidChangeDependencyVersion() {
-		try {
+	public void invalidChangeDependencyVersion() throws PhrescoPomException {
 			PomProcessor processor = new PomProcessor(new File("pomTest.xml"));
 			processor.changeDependencyVersion("com.photon.invalid", "artifact","2.2");
 			processor.save();
 			Assert.assertTrue("Invalid Dependency values", true);
-		} catch (JAXBException e) {
-			Assert.fail("Change Version Failed!");
-		} catch (IOException e) {
-			Assert.fail("Change Version Failed!");
-		} catch (PhrescoPomException e) {
-			
-		}
 	}
 
 	@After

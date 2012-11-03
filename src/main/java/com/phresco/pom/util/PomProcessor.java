@@ -30,12 +30,14 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.PropertyException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang.StringUtils;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -92,19 +94,26 @@ public class PomProcessor {
 	 * Instantiates a new pom processor.
 	 *
 	 * @param pomFile the pom file
+	 * @throws PhrescoPomException 
 	 * @throws JAXBException the jAXB exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public PomProcessor(File pomFile) throws JAXBException, IOException {
-		if(pomFile.exists()){
-			JAXBContext jaxbContext = JAXBContext.newInstance(Model.class);
-			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-			model = (Model) ((JAXBElement)jaxbUnmarshaller.unmarshal(pomFile)).getValue();
-		} else {
-			pomFile.createNewFile();
-			model = new Model();
+	public PomProcessor(File pomFile) throws PhrescoPomException {
+		try {
+			if(pomFile.exists()){
+				JAXBContext jaxbContext = JAXBContext.newInstance(Model.class);
+				Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+				model = (Model) ((JAXBElement)jaxbUnmarshaller.unmarshal(pomFile)).getValue();
+			} else {
+				pomFile.createNewFile();
+				model = new Model();
+			}
+			file = pomFile;
+		} catch (JAXBException e) {
+			throw new PhrescoPomException(e);
+		} catch (IOException e) {
+			throw new PhrescoPomException(e);
 		}
-		file = pomFile;
 	}
 	
 	/**
@@ -129,7 +138,7 @@ public class PomProcessor {
 	 * @throws JAXBException the jAXB exception
 	 * @throws PhrescoPomException the phresco pom exception
 	 */
-	public void addDependency(String groupId, String artifactId, String version, String scope) throws JAXBException, PhrescoPomException {
+	public void addDependency(String groupId, String artifactId, String version, String scope) throws PhrescoPomException {
 		addDependency(groupId, artifactId, version, scope, null, null);
 	} 
 	
@@ -145,7 +154,7 @@ public class PomProcessor {
 	 * @throws JAXBException
 	 * @throws PhrescoPomException
 	 */
-	public void addDependency(String groupId, String artifactId, String version, String scope, String type,String systemPath) throws JAXBException, PhrescoPomException {
+	public void addDependency(String groupId, String artifactId, String version, String scope, String type,String systemPath) throws  PhrescoPomException {
 		if(isDependencyAvailable(groupId, artifactId)){
             changeDependencyVersion(groupId, artifactId, version);
             setDependencySystemPath(groupId, artifactId, systemPath);
@@ -281,7 +290,7 @@ public class PomProcessor {
 	 * @throws JAXBException the jAXB exception
 	 * @throws PhrescoPomException the phresco pom exception
 	 */
-	public void addDependency(String groupId, String artifactId, String version) throws JAXBException, PhrescoPomException {
+	public void addDependency(String groupId, String artifactId, String version) throws  PhrescoPomException {
 		if(isDependencyAvailable(groupId, artifactId)){
 			changeDependencyVersion(groupId, artifactId, version);
 		}
@@ -720,28 +729,34 @@ public class PomProcessor {
 	 *
 	 * @param name the name
 	 * @param value the value
+	 * @throws PhrescoPomException 
 	 * @throws ParserConfigurationException the parser configuration exception
 	 */
 	
-	public void setProperty(String name,String value) throws ParserConfigurationException {
-		
-		DocumentBuilderFactory dbfac = DocumentBuilderFactory.newInstance();
-		DocumentBuilder docBuilder = dbfac.newDocumentBuilder();
-		Document doc = docBuilder.newDocument();
-		Element element = doc.createElement(name);
-		element.setTextContent(value);
-		
-		if(model.getProperties()==null){
-			Properties properties = new Properties();
-			model.setProperties(properties);
-		}
-		for(Element proElement : model.getProperties().getAny()){
-			if(proElement.getTagName().equals(name)){
-				proElement.setTextContent(value);
-				return;
+	public void setProperty(String name,String value) throws PhrescoPomException {
+		try {
+			DocumentBuilderFactory dbfac = DocumentBuilderFactory.newInstance();
+			DocumentBuilder docBuilder = dbfac.newDocumentBuilder();
+			Document doc = docBuilder.newDocument();
+			Element element = doc.createElement(name);
+			element.setTextContent(value);
+			
+			if(model.getProperties()==null){
+				Properties properties = new Properties();
+				model.setProperties(properties);
 			}
+			for(Element proElement : model.getProperties().getAny()){
+				if(proElement.getTagName().equals(name)){
+					proElement.setTextContent(value);
+					return;
+				}
+			}
+			model.getProperties().getAny().add(element);
+		} catch (DOMException e) {
+			throw new PhrescoPomException(e);
+		} catch (ParserConfigurationException e) {
+			throw new PhrescoPomException(e);
 		}
-		model.getProperties().getAny().add(element);
 	}
 
 	/**
@@ -1243,13 +1258,20 @@ public class PomProcessor {
 	
 	/**
 	 * Save.
+	 * @throws PhrescoPomException 
 	 *
 	 * @throws JAXBException the jAXB exception
 	 */
-	public void save() throws JAXBException {
-		JAXBContext jaxbContext = JAXBContext.newInstance(Model.class);
-		Marshaller marshal = jaxbContext.createMarshaller();
-		marshal.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-		marshal.marshal(model, file);
+	public void save() throws PhrescoPomException  {
+		try {
+			JAXBContext jaxbContext = JAXBContext.newInstance(Model.class);
+			Marshaller marshal = jaxbContext.createMarshaller();
+			marshal.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+			marshal.marshal(model, file);
+		} catch (PropertyException e) {
+			throw new PhrescoPomException(e);
+		} catch (JAXBException e) {
+			throw new PhrescoPomException(e);
+		}
 	}
 }

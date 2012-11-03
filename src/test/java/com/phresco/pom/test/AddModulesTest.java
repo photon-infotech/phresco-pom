@@ -20,9 +20,6 @@
 package com.phresco.pom.test;
 
 import java.io.File;
-import java.io.IOException;
-
-import javax.xml.bind.JAXBException;
 
 import junit.framework.Assert;
 
@@ -36,7 +33,7 @@ import com.phresco.pom.util.PomProcessor;
 public class AddModulesTest {
 
 	@Before
-	public void prepare() throws IOException {
+	public void prepare() {
 		File file = new File("pomTest.xml");
 		if(file.exists()) {
 			file.delete();
@@ -44,18 +41,12 @@ public class AddModulesTest {
 	}
 	
 	@Test
-	public void validAddModules() throws ArrayIndexOutOfBoundsException, PhrescoPomException{
-		try {
-			PomProcessor processor = new PomProcessor(new File("pomTest.xml"));
-			processor.addModule("Phresco");
-			processor.addModule("Photon");
-			processor.save();
-			Assert.assertEquals(2, processor.getModel().getModules().getModule().size());
-		} catch (JAXBException e) {
-			Assert.fail("Add Plugin Failed!");
-		} catch (IOException e) {
-			Assert.fail("Add Plugin Failed!");
-		}
+	public void validAddModules() throws  PhrescoPomException{
+		PomProcessor processor = new PomProcessor(new File("pomTest.xml"));
+		processor.addModule("Phresco");
+		processor.addModule("Photon");
+		processor.save();
+		Assert.assertEquals(2, processor.getModel().getModules().getModule().size());
 	}
 	
 	@After

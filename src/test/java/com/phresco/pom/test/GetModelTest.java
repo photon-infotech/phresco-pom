@@ -30,6 +30,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.phresco.pom.exception.PhrescoPomException;
 import com.phresco.pom.util.PomProcessor;
 
 public class GetModelTest {
@@ -43,22 +44,15 @@ public class GetModelTest {
 	}
 	
 	@Test
-	public void validGetModel() {
-		try {
-			PomProcessor processor = new PomProcessor(new File("pomTest.xml"));
-			processor.getModel().setArtifactId("phresco");
-			processor.getModel().setGroupId("photon");
-			processor.getModel();
-			processor.save();
-			String actual = processor.getModel().getArtifactId();
-			String expected = "phresco";
-			Assert.assertEquals(actual,expected);
-		} catch (IOException e) {
-			Assert.fail("Get Plugin Failed!");
-		} catch (JAXBException e) {
-			Assert.fail("Get Plugin Failed!");
-			e.printStackTrace();
-		}
+	public void validGetModel() throws PhrescoPomException {
+		PomProcessor processor = new PomProcessor(new File("pomTest.xml"));
+		processor.getModel().setArtifactId("phresco");
+		processor.getModel().setGroupId("photon");
+		processor.getModel();
+		processor.save();
+		String actual = processor.getModel().getArtifactId();
+		String expected = "phresco";
+		Assert.assertEquals(actual,expected);
 	}
 	
 	@After

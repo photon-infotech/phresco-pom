@@ -30,6 +30,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
 import com.phresco.pom.android.AndroidProfile;
 import com.phresco.pom.exception.PhrescoPomException;
 import com.phresco.pom.model.BuildBase;
@@ -50,10 +51,11 @@ public class AndroidPomProcessor extends PomProcessor {
 
 	/**
 	 * @param pomFile
+	 * @throws PhrescoPomException 
 	 * @throws JAXBException
 	 * @throws IOException
 	 */
-	public AndroidPomProcessor(File pomFile) throws JAXBException, IOException {
+	public AndroidPomProcessor(File pomFile) throws PhrescoPomException  {
 		super(pomFile);
 	}
 

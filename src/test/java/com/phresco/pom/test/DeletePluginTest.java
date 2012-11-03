@@ -3,9 +3,6 @@ package com.phresco.pom.test;
 import java.io.File;
 import java.io.IOException;
 
-import javax.xml.bind.JAXBException;
-import javax.xml.parsers.ParserConfigurationException;
-
 import junit.framework.Assert;
 
 import org.junit.After;
@@ -27,22 +24,16 @@ public class DeletePluginTest {
 	}
 	
 	@Test
-	public void deletePluginTest() throws ParserConfigurationException, PhrescoPomException{
-		try {
-			PomProcessor processor = new PomProcessor(new File("pomTest.xml"));
-			processor.addPlugin("com.photon.phresco.plugin", "phresco-maven-plugin", "1.2.0.3001");
-			processor.save();
-			processor.deletePlugin("com.photon.phresco.plugin", "phresco-maven-plugin");
-			processor.save();
-			Plugin plugin = processor.getPlugin("com.photon.phresco.plugin", "phresco-maven-plugin");
-			Plugin actual = plugin;
-			Plugin expected = null;
-			Assert.assertEquals(expected, actual);
-		} catch (JAXBException e) {
-			Assert.fail("Plugin Not Found!");
-		} catch (IOException e) {
-			Assert.fail("Plugin Not Found!");
-		}
+	public void deletePluginTest() throws PhrescoPomException{
+		PomProcessor processor = new PomProcessor(new File("pomTest.xml"));
+		processor.addPlugin("com.photon.phresco.plugin", "phresco-maven-plugin", "1.2.0.3001");
+		processor.save();
+		processor.deletePlugin("com.photon.phresco.plugin", "phresco-maven-plugin");
+		processor.save();
+		Plugin plugin = processor.getPlugin("com.photon.phresco.plugin", "phresco-maven-plugin");
+		Plugin actual = plugin;
+		Plugin expected = null;
+		Assert.assertEquals(expected, actual);
 	}
 	
 	@After

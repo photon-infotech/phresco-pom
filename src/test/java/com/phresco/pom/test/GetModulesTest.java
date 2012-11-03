@@ -22,8 +22,6 @@ package com.phresco.pom.test;
 import java.io.File;
 import java.io.IOException;
 
-import javax.xml.bind.JAXBException;
-
 import junit.framework.Assert;
 
 import org.junit.After;
@@ -44,8 +42,7 @@ public class GetModulesTest {
 	}
 	
 	@Test
-	public void validGetModules() {
-		try {
+	public void validGetModules() throws PhrescoPomException {
 			PomProcessor processor = new PomProcessor(new File("pomTest.xml"));
 			processor.addModule("Photon");
 			processor.addModule("phresco");
@@ -53,13 +50,6 @@ public class GetModulesTest {
 			String actual = processor.getPomModule().getModule().get(0);
 			String expected = "Photon";
 			Assert.assertEquals(actual,expected);
-		} catch (IOException e) {
-			Assert.fail("Get Plugin Failed!");
-		} catch (JAXBException e) {
-		    Assert.fail("Get Plugin Failed!");
-		} catch (PhrescoPomException e) {
-			Assert.fail("Get Plugin Failed!");
-		}
 	}
 	
 	@After

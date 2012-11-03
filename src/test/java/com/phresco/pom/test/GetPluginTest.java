@@ -22,7 +22,6 @@ package com.phresco.pom.test;
 import java.io.File;
 import java.io.IOException;
 
-import javax.xml.bind.JAXBException;
 import junit.framework.Assert;
 
 import org.junit.After;
@@ -44,8 +43,7 @@ public class GetPluginTest {
 	}
 	
 	@Test
-	public void validGetPlugin() {
-		try {
+	public void validGetPlugin() throws PhrescoPomException {
 			PomProcessor processor = new PomProcessor(new File("pomTest.xml"));
 			processor.addPlugin("phresco", "photon","2.2");
 			processor.addPlugin("Suresh", "marimuthu","1.1");
@@ -54,15 +52,6 @@ public class GetPluginTest {
 			String actual = processor.getModel().getBuild().getPlugins().getPlugin().get(0).getArtifactId();
 			String expected = "photon";
 			Assert.assertEquals(actual,expected);
-		} catch (IOException e) {
-			Assert.fail("Get Plugin Failed!");
-		} catch (JAXBException e) {
-			Assert.fail("Get Plugin Failed!");
-			e.printStackTrace();
-		} catch (PhrescoPomException e) {
-			Assert.fail("Get Plugin Failed!");
-			e.printStackTrace();
-		}
 	}
 	
 	@Test
@@ -73,10 +62,6 @@ public class GetPluginTest {
 			processor.addPlugin("phresco", "photon","2.2");
 			processor.getPlugin("phres", "phot");
 			Assert.assertTrue(true);
-		} catch (IOException e) {
-			Assert.fail("Get Plugin Failed!");
-		} catch (JAXBException e) {
-			Assert.fail("Get Plugin Failed!");
 		} catch (PhrescoPomException e) {
 			Assert.assertTrue(e.getErrorCode()==POMErrorCode.PLUGIN_NOT_FOUND);
 		}

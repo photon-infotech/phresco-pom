@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.JAXBException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -34,8 +33,7 @@ public class AddExecutionConfigurationTest {
 	}
 	
 	@Test
-	public void addExecutionConfigurationTest() {
-		try {
+	public void addExecutionConfigurationTest() throws PhrescoPomException, ParserConfigurationException {
 			String id = "";
 			PomProcessor processor = new PomProcessor(new File("pomTest.xml"));
 			DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
@@ -55,15 +53,6 @@ public class AddExecutionConfigurationTest {
 			String actual = id;
 			String expected = "test";
 			Assert.assertEquals(actual,expected);
-		} catch (IOException e) {
-			Assert.fail("Get Plugin Failed!");
-		} catch (JAXBException e) {
-		    Assert.fail("Get Plugin Failed!");
-		} catch (PhrescoPomException e) {
-			Assert.fail("Get Plugin Failed!");
-		} catch (ParserConfigurationException e) {
-			Assert.fail();
-		}
 	}
 	
 	@After

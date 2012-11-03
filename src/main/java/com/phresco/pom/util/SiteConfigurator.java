@@ -20,7 +20,6 @@
 package com.phresco.pom.util;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,8 +79,6 @@ public class SiteConfigurator {
 				processor.save();
 		} catch (JAXBException e) {
 			LOGGER.debug(e);
-		} catch (IOException e) {
-			LOGGER.debug(e);
 		} catch (PhrescoPomException e) {
 			LOGGER.debug(e);
 		}
@@ -116,9 +113,7 @@ public class SiteConfigurator {
 				processor.removeSitePlugin(groupId,artifactId);
 				processor.save();
 			}
-		} catch (JAXBException e) {
-			LOGGER.debug(e);
-		} catch (IOException e) {
+		} catch (PhrescoPomException e) {
 			LOGGER.debug(e);
 		}
 	}
@@ -155,9 +150,7 @@ public class SiteConfigurator {
 				} 
 				return reports;
 			}
-		} catch (JAXBException e) {
-			LOGGER.debug(e);
-		} catch (IOException e) {
+		} catch (PhrescoPomException e) {
 			LOGGER.debug(e);
 		}
 		return null;
@@ -167,13 +160,13 @@ public class SiteConfigurator {
 	 * @param file
 	 * @param reportCategories
 	 */
-	public void removeReportCategory(File file,List<ReportCategories> reportCategories){
+	public void removeReportCategory(File file,List<ReportCategories> reportCategories) {
 		try {
 			PomProcessor processor = new PomProcessor(file);
 			processor.removeProjectInfoReportCategory(reportCategories);
 			processor.save();
-		} catch (JAXBException e) {
-		} catch (IOException e) {
+		}  catch (PhrescoPomException e) {
+			LOGGER.debug(e);
 		}
 	}
 }

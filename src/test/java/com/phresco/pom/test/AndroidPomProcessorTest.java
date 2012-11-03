@@ -1,9 +1,6 @@
 package com.phresco.pom.test;
 
 import java.io.File;
-import java.io.IOException;
-
-import javax.xml.bind.JAXBException;
 
 import junit.framework.Assert;
 
@@ -22,7 +19,7 @@ public class AndroidPomProcessorTest {
 	private File file;
 	
 	@Before
-	public void prepare() throws IOException {
+	public void prepare() {
 	   file = new File("pomTest.xml");
 		if(file.exists()) {
 			file.delete();
@@ -30,8 +27,7 @@ public class AndroidPomProcessorTest {
 	}
 	
 	@Test
-	public void addAndroidProfileTest() {
-		try {
+	public void addAndroidProfileTest() throws PhrescoPomException {
 			AndroidPomProcessor processor = new AndroidPomProcessor(file);
 			BuildBase build = new BuildBase();
 			build.setDefaultGoal("install");
@@ -45,10 +41,6 @@ public class AndroidPomProcessorTest {
 			} else {
 				Assert.fail();
 			}
-		} catch (JAXBException e) {
-		} catch (IOException e) {
-		} catch (PhrescoPomException e) {
-		}
 	}
 	@After
 	public void delete() {

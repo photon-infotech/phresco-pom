@@ -20,8 +20,6 @@
 package com.phresco.pom.test;
 
 import java.io.File;
-import java.io.IOException;
-import javax.xml.bind.JAXBException;
 
 import junit.framework.Assert;
 
@@ -36,14 +34,13 @@ import com.phresco.pom.util.PomProcessor;
 public class RemoveAllDependencyTest {
 
 	@Before
-	public void prepare() {
+	public void prepare() throws PhrescoPomException {
 		AddDependencyTest addTest = new AddDependencyTest();
 		addTest.prepare();
 	}
 
 	@Test
-	public void validRemoveAllDependency() {
-		try {
+	public void validRemoveAllDependency() throws PhrescoPomException {
 			PomProcessor processor = new PomProcessor(new File("pomTest.xml"));
 			processor.removeAllDependencies();
 			processor.save();
@@ -51,13 +48,6 @@ public class RemoveAllDependencyTest {
 			Dependencies expected = null;
 			Assert.assertEquals(expected, actual);
 
-		} catch (JAXBException e) {
-			Assert.fail("Change Version Failed!");
-		} catch (IOException e) {
-			Assert.fail("Change Version Failed!");
-		} catch (PhrescoPomException e) {
-			Assert.fail("Change Version Failed!");
-		}
 	}
 	@After
 	public void delete(){

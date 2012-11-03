@@ -22,8 +22,6 @@ package com.phresco.pom.test;
 import java.io.File;
 import java.io.IOException;
 
-import javax.xml.bind.JAXBException;
-
 import junit.framework.Assert;
 
 import org.junit.After;
@@ -52,10 +50,6 @@ public class AddProfileTest {
 			String actual = processor.getProfile("123").getId();
 			String expected = "123";
 			Assert.assertEquals(actual,expected);
-		} catch (IOException e) {
-			Assert.fail("Get Plugin Failed!");
-		} catch (JAXBException e) {
-		    Assert.fail("Get Plugin Failed!");
 		} catch (PhrescoPomException e) {
 			Assert.fail("Get Plugin Failed!");
 		}

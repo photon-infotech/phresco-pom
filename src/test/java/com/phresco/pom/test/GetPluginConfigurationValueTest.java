@@ -1,11 +1,9 @@
 package com.phresco.pom.test;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.JAXBException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -24,7 +22,7 @@ import com.phresco.pom.util.PomProcessor;
 public class GetPluginConfigurationValueTest {
 
 	@Before
-	public void prepare() throws IOException{
+	public void prepare() {
 		File file = new File("pomTest.xml");
 		if(file.exists()) {
 			file.delete();
@@ -32,8 +30,7 @@ public class GetPluginConfigurationValueTest {
 	}
 	
 	@Test
-	public void getPluginConfigurationValueTest() {
-		try {
+	public void getPluginConfigurationValueTest() throws PhrescoPomException, ParserConfigurationException {
 			PomProcessor processor = new PomProcessor(new File("pomTest.xml"));
 			processor.addPlugin("com.photon.phresco.plugin", "plugin-artifactID", "2.0");
 			processor.save();
@@ -53,15 +50,6 @@ public class GetPluginConfigurationValueTest {
 			String actual = value;
 			String expected = "phresco";
 			Assert.assertEquals(actual,expected);
-		} catch (IOException e) {
-			Assert.fail("Get Plugin Failed!");
-		} catch (JAXBException e) {
-		    Assert.fail("Get Plugin Failed!");
-		} catch (PhrescoPomException e) {
-			Assert.fail("Get Plugin Failed!");
-		} catch (ParserConfigurationException e) {
-			
-		}
 	}
 	
 	@After
