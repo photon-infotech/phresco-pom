@@ -587,12 +587,15 @@ public class PomProcessor {
 			com.phresco.pom.model.PluginExecution.Configuration configuration) {
 		Element artifactItems;
 		Element artifactItem;
+		Element markersDirectory = document.createElement("markersDirectory");
+		markersDirectory.setTextContent("do_not_checkin/markers");
 		artifactItems = document.createElement("artifactItems");
 		artifactItem = document.createElement("artifactItem");
 		for (Element configElement : configList) {
 			artifactItem.appendChild(configElement);
 			artifactItems.appendChild(artifactItem);
 		}
+		configuration.getAny().add(markersDirectory);
 		configuration.getAny().add(artifactItems);
 		execution.setConfiguration(configuration);
 		executions.getExecution().add(execution);
