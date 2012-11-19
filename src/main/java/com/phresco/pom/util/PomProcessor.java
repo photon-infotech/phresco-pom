@@ -566,15 +566,21 @@ public class PomProcessor {
 			List<Element> configElementList) {
 		Element artifactItems;
 		Element artifactItem;
+		Element markersDirectory = null;
 		for (Element configElement : configElementList) {
+			if(configElement.getTagName().equals("markersDirectory")) {
+				markersDirectory = configElement;
+			}
 			if (configElement.getTagName().equals("artifactItems")) {
 				artifactItems = configElement;
 				artifactItem = document.createElement("artifactItem");
 				for (Element configListElement : configList) {
 					artifactItem.appendChild(configListElement);
 				}
+				Element markersDirectoryImported = (Element) document.importNode(markersDirectory, Boolean.TRUE);
 				Element imported = (Element) document.importNode(artifactItems, Boolean.TRUE);
 				imported.appendChild(artifactItem);
+				configuration.getAny().add(markersDirectoryImported);
 				configuration.getAny().add(imported);
 				execution.setConfiguration(configuration);
 			}
