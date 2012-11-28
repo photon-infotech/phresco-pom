@@ -1256,6 +1256,9 @@ public class PomProcessor {
 	}
 	
 	public void addRepositories(String repoId, String repoURL) {
+		if(model.getRepositories() != null) {
+			return;
+		}
 		if(model.getRepositories() == null) {
 			model.setRepositories(new Repositories());
 		}
