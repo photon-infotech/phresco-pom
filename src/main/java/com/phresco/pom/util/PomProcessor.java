@@ -94,9 +94,7 @@ public class PomProcessor {
 	 * Instantiates a new pom processor.
 	 *
 	 * @param pomFile the pom file
-	 * @throws PhrescoPomException 
-	 * @throws JAXBException the jAXB exception
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws PhrescoPomException the phresco pom exception
 	 */
 	public PomProcessor(File pomFile) throws PhrescoPomException {
 		try {
@@ -118,9 +116,10 @@ public class PomProcessor {
 	
 	/**
 	 * Instantiates a new pom processor from inputstream.
-	 * @param inputStream
-	 * @throws JAXBException
-	 * @throws IOException
+	 *
+	 * @param inputStream the input stream
+	 * @throws JAXBException the jAXB exception
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public PomProcessor(InputStream inputStream) throws JAXBException, IOException {
         JAXBContext jaxbContext = JAXBContext.newInstance(Model.class);
@@ -135,7 +134,6 @@ public class PomProcessor {
 	 * @param artifactId the artifact id
 	 * @param version the version
 	 * @param scope the scope
-	 * @throws JAXBException the jAXB exception
 	 * @throws PhrescoPomException the phresco pom exception
 	 */
 	public void addDependency(String groupId, String artifactId, String version, String scope) throws PhrescoPomException {
@@ -144,15 +142,14 @@ public class PomProcessor {
 	
 	/**
 	 * Adds the dependency.
-	 * 
-	 * @param groupId
-	 * @param artifactId
-	 * @param version
-	 * @param scope
-	 * @param type
-	 * @param systemPath
-	 * @throws JAXBException
-	 * @throws PhrescoPomException
+	 *
+	 * @param groupId the group id
+	 * @param artifactId the artifact id
+	 * @param version the version
+	 * @param scope the scope
+	 * @param type the type
+	 * @param systemPath the system path
+	 * @throws PhrescoPomException the phresco pom exception
 	 */
 	public void addDependency(String groupId, String artifactId, String version, String scope, String type,String systemPath) throws  PhrescoPomException {
 		if(isDependencyAvailable(groupId, artifactId)){
@@ -248,10 +245,12 @@ public class PomProcessor {
 	}
 	
 	/**
-	 * @param groupId
-	 * @param artifactId
-	 * @param systemPath
-	 * @throws PhrescoPomException
+	 * Sets the dependency system path.
+	 *
+	 * @param groupId the group id
+	 * @param artifactId the artifact id
+	 * @param systemPath the system path
+	 * @throws PhrescoPomException the phresco pom exception
 	 */
 	public void setDependencySystemPath(String groupId, String artifactId,String systemPath) throws PhrescoPomException {
 		if(model.getDependencies()==null){
@@ -266,9 +265,11 @@ public class PomProcessor {
 	}
 	
 	/**
-	 * @param groupId
-	 * @param artifactId
-	 * @return
+	 * Gets the dependency.
+	 *
+	 * @param groupId the group id
+	 * @param artifactId the artifact id
+	 * @return the dependency
 	 */
 	public Dependency getDependency(String groupId, String artifactId) {
 		if(model.getDependencies()!=null) {
@@ -287,7 +288,6 @@ public class PomProcessor {
 	 * @param groupId the group id
 	 * @param artifactId the artifact id
 	 * @param version the version
-	 * @throws JAXBException the jAXB exception
 	 * @throws PhrescoPomException the phresco pom exception
 	 */
 	public void addDependency(String groupId, String artifactId, String version) throws  PhrescoPomException {
@@ -324,6 +324,14 @@ public class PomProcessor {
 		return isFound;
 	}
 	
+	/**
+	 * Delete plugin dependency.
+	 *
+	 * @param groupId the group id
+	 * @param artifactId the artifact id
+	 * @return the boolean
+	 * @throws PhrescoPomException the phresco pom exception
+	 */
 	public Boolean deletePluginDependency(String groupId, String artifactId) throws PhrescoPomException {
 		boolean isFound = false;
 		if(model.getBuild().getPlugins() == null) {
@@ -512,54 +520,63 @@ public class PomProcessor {
 	 * @param phase the phase
 	 * @param goal the goal
 	 * @param configList the config list
-	 * @param overwrite the overwrite
 	 * @param document the document
 	 * @throws PhrescoPomException the phresco pom exception
-	 * @throws ParserConfigurationException the parser configuration exception
 	 */
 	public void addExecutionConfiguration(String pluginGroupId, String pluginArtifactId, String executionId,
-			String phase, String goal, List<Element> configList, boolean overwrite, Document document)
-			throws PhrescoPomException, ParserConfigurationException {
-		Plugin plugin = getPlugin(pluginGroupId, pluginArtifactId);
-		if (plugin == null) {
-			plugin = addPlugin(pluginGroupId, pluginArtifactId, "2.3");
-		}
+			String phase, String goal, List<Element> configList, Document document) throws PhrescoPomException {
+		boolean addExecution = false;
+		try {
+			Plugin plugin = getPlugin(pluginGroupId, pluginArtifactId);
+			if (plugin == null) {
+				plugin = addPlugin(pluginGroupId, pluginArtifactId, "2.3");
+			}
 
-		Executions executions = plugin.getExecutions();
+			Executions executions = plugin.getExecutions();
 
-		if (executions == null) {
-			executions = new Executions();
-			plugin.setExecutions(executions);
-		}
-		PluginExecution execution = getExecution(executions, executionId, goal);
-		if (overwrite) {
-			execution.getConfiguration().getAny().clear(); // empty the executions
-		}
+			if (executions == null) {
+				executions = new Executions();
+				plugin.setExecutions(executions);
+			}
+			PluginExecution execution = getExecution(executions, executionId, goal);
+			
+			if (execution == null) {
+				addExecution = true;
+				 execution = new PluginExecution();
+				execution.setId(executionId);
+				execution.setPhase(phase);
+				Goals goals = new Goals();
+				goals.getGoal().add(goal);
+				execution.setGoals(goals);
+			}
+			com.phresco.pom.model.PluginExecution.Configuration configuration = new com.phresco.pom.model.PluginExecution.Configuration();
+			if (execution.getConfiguration() == null) {
+				execution.setConfiguration(configuration);
+			}
 
-		if (execution == null) {
-			 execution = new PluginExecution();
-			execution.setId(executionId);
-			execution.setPhase(phase);
-			Goals goals = new Goals();
-			goals.getGoal().add(goal);
-			execution.setGoals(goals);
-		}
-		com.phresco.pom.model.PluginExecution.Configuration configuration = new com.phresco.pom.model.PluginExecution.Configuration();
-		if (execution.getConfiguration() == null) {
-			execution.setConfiguration(configuration);
-		}
-
-		List<Element> configElementList = execution.getConfiguration().getAny();
-		if (configElementList.isEmpty()) {	
-			createArtifactItems(configList, document, plugin, executions,
-					execution, configuration);
-		}
-		else {
-			addArtifactItem(configList, document, execution, configuration,
-					configElementList);
+			List<Element> configElementList = execution.getConfiguration().getAny();
+			if (configElementList.isEmpty()) {	
+				createArtifactItems(configList, document, plugin, executions,
+						execution, configuration, addExecution);
+			}
+			else {
+				addArtifactItem(configList, document, execution, configuration,
+						configElementList);
+			}
+		} catch (PhrescoPomException e) {
+			throw new PhrescoPomException(e);
 		}
 	}
 
+	/**
+	 * Adds the artifact item.
+	 *
+	 * @param configList the config list
+	 * @param document the document
+	 * @param execution the execution
+	 * @param configuration the configuration
+	 * @param configElementList the config element list
+	 */
 	private void addArtifactItem(List<Element> configList, Document document,
 			PluginExecution execution,
 			com.phresco.pom.model.PluginExecution.Configuration configuration,
@@ -587,10 +604,20 @@ public class PomProcessor {
 		}
 	}
 
-	private void createArtifactItems(List<Element> configList,
-			Document document, Plugin plugin, Executions executions,
-			PluginExecution execution,
-			com.phresco.pom.model.PluginExecution.Configuration configuration) {
+	/**
+	 * Creates the artifact items.
+	 *
+	 * @param configList the config list
+	 * @param document the document
+	 * @param plugin the plugin
+	 * @param executions the executions
+	 * @param execution the execution
+	 * @param configuration the configuration
+	 * @param addExecution the add execution
+	 */
+	private void createArtifactItems(List<Element> configList, Document document, Plugin plugin, Executions executions,
+			PluginExecution execution, com.phresco.pom.model.PluginExecution.Configuration configuration,
+			boolean addExecution) {
 		Element artifactItems;
 		Element artifactItem;
 		Element markersDirectory = document.createElement("markersDirectory");
@@ -604,8 +631,34 @@ public class PomProcessor {
 		configuration.getAny().add(markersDirectory);
 		configuration.getAny().add(artifactItems);
 		execution.setConfiguration(configuration);
-		executions.getExecution().add(execution);
-		plugin.setExecutions(executions);
+		if (addExecution) {
+			executions.getExecution().add(execution);
+			plugin.setExecutions(executions);
+		}
+	}
+	
+	/**
+	 * Delete configuration.
+	 *
+	 * @param pluginGroupId the plugin group id
+	 * @param pluginArtifactId the plugin artifact id
+	 * @param executionId the execution id
+	 * @param goal the goal
+	 * @throws PhrescoPomException the phresco pom exception
+	 */
+	public void deleteConfiguration(String pluginGroupId, String pluginArtifactId, String executionId, String goal) throws PhrescoPomException {
+		try {
+			Plugin plugin = getPlugin(pluginGroupId, pluginArtifactId);
+			if (plugin != null) {
+				Executions executions = plugin.getExecutions();
+				PluginExecution execution = getExecution(executions, executionId, goal);
+				if (execution != null) {
+					execution.setConfiguration(null);
+				}
+			}
+		} catch (PhrescoPomException e) {
+			throw new PhrescoPomException(e);
+		}
 	}
 	
 	/**
@@ -680,7 +733,6 @@ public class PomProcessor {
 	 * @param pluginArtifactId the plugin artifact id
 	 * @param dependency the dependency
 	 * @return the com.phresco.pom.model. plugin. dependencies
-	 * @throws ParserConfigurationException the parser configuration exception
 	 * @throws PhrescoPomException the phresco pom exception
 	 */
 	public com.phresco.pom.model.Plugin.Dependencies addPluginDependency(String pluginGroupId,String pluginArtifactId, Dependency dependency) throws PhrescoPomException{
@@ -738,8 +790,7 @@ public class PomProcessor {
 	 *
 	 * @param name the name
 	 * @param value the value
-	 * @throws PhrescoPomException 
-	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws PhrescoPomException the phresco pom exception
 	 */
 	
 	public void setProperty(String name,String value) throws PhrescoPomException {
@@ -889,7 +940,6 @@ public class PomProcessor {
 	 * Adds the profile.
 	 *
 	 * @param id the id
-	 * @param activation the activation
 	 * @param build the build
 	 * @param modules the modules
 	 * @return the profile
@@ -904,6 +954,14 @@ public class PomProcessor {
 		return profile;
 	}
 	
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 * @throws JAXBException the jAXB exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws PhrescoPomException the phresco pom exception
+	 */
 	public static void main(String[] args) throws JAXBException, IOException, PhrescoPomException {
 		PomProcessor p = new PomProcessor(new File("D:\\pom\\pom.xml"));
 		BuildBase build = new BuildBase();
@@ -915,6 +973,12 @@ public class PomProcessor {
 		p.save();
 	}
 
+	/**
+	 * Creates the profiles.
+	 *
+	 * @param id the id
+	 * @return the profile
+	 */
 	private Profile createProfiles(String id) {
 		Profiles profiles = model.getProfiles();
 		if(profiles ==null) {
@@ -1028,6 +1092,11 @@ public class PomProcessor {
 		return null;
 	}
 	
+	/**
+	 * Gets the name.
+	 *
+	 * @return the name
+	 */
 	public String getName() {
 		if(model.getName() == null){
 			return "";
@@ -1035,10 +1104,20 @@ public class PomProcessor {
 		return model.getName();
 	}
 	
+	/**
+	 * Sets the name.
+	 *
+	 * @param name the new name
+	 */
 	public void setName(String name){
 		model.setName(name);
 	}
 	
+	/**
+	 * Gets the group id.
+	 *
+	 * @return the group id
+	 */
 	public String getGroupId() {
 		if(model.getGroupId() == null){
 			return model.getParent().getGroupId();
@@ -1046,10 +1125,20 @@ public class PomProcessor {
 		return model.getGroupId();
 	}
 	
+	/**
+	 * Sets the group id.
+	 *
+	 * @param groupId the new group id
+	 */
 	public void setGroupId(String groupId){
 		model.setGroupId(groupId);
 	}
 	
+	/**
+	 * Gets the artifact id.
+	 *
+	 * @return the artifact id
+	 */
 	public String getArtifactId() {
 		if(model.getArtifactId() == null){
 			return model.getParent().getArtifactId();
@@ -1057,10 +1146,20 @@ public class PomProcessor {
 		return model.getArtifactId();
 	}
 	
+	/**
+	 * Sets the artifact id.
+	 *
+	 * @param artifactId the new artifact id
+	 */
 	public void setArtifactId(String artifactId){
 		model.setArtifactId(artifactId);
 	}
 	
+	/**
+	 * Gets the version.
+	 *
+	 * @return the version
+	 */
 	public String getVersion(){
 		if(model.getVersion() == null){
 			return model.getParent().getVersion();
@@ -1068,10 +1167,20 @@ public class PomProcessor {
 		return model.getVersion();
 	}
 	
+	/**
+	 * Sets the version.
+	 *
+	 * @param version the new version
+	 */
 	public void setVersion(String version){
 		model.setVersion(version);
 	}
 	
+	/**
+	 * Gets the package.
+	 *
+	 * @return the package
+	 */
 	public String getPackage() {
 		if(model.getPackaging() == null){
 			return "";
@@ -1079,10 +1188,20 @@ public class PomProcessor {
 		return model.getPackaging();
 	}
 	
+	/**
+	 * Sets the packaging.
+	 *
+	 * @param packaging the new packaging
+	 */
 	public void setPackaging(String packaging){
 		model.setPackaging(packaging);
 	}
 	
+	/**
+	 * Gets the parent.
+	 *
+	 * @return the parent
+	 */
 	public Parent getParent(){
 		if (model.getParent() != null) {
 			return model.getParent();
@@ -1091,8 +1210,10 @@ public class PomProcessor {
 	}
 	
 	/**
-	 * @param artifactId
-	 * @return
+	 * Gets the site plugin.
+	 *
+	 * @param artifactId the artifact id
+	 * @return the site plugin
 	 */
 	
 	public Plugin getSitePlugin(String artifactId){
@@ -1107,10 +1228,10 @@ public class PomProcessor {
 	}
 	
 	/**
-	 * @param artifactId
-	 * @param version
-	 * @throws JAXBException
-	 * @throws PhrescoPomException
+	 * Adds the site plugin.
+	 *
+	 * @throws JAXBException the jAXB exception
+	 * @throws PhrescoPomException the phresco pom exception
 	 */
 	public void addSitePlugin() throws JAXBException, PhrescoPomException{
 		Plugin existingPlugin = getSitePlugin(PomConstants.SITE_PLUGIN_ARTIFACT_ID);
@@ -1146,6 +1267,11 @@ public class PomProcessor {
 		plugins.getPlugin().add(plugin);
 	}
 	
+	/**
+	 * Gets the report plugin.
+	 *
+	 * @return the report plugin
+	 */
 	public List<ReportPlugin> getReportPlugin() {
 		if(model.getReporting() != null && model.getReporting().getPlugins().getPlugin() != null) {
 			return model.getReporting().getPlugins().getPlugin();
@@ -1154,7 +1280,9 @@ public class PomProcessor {
 	}
 	
 	/**
-	 * @return
+	 * Gets the project info report categories.
+	 *
+	 * @return the project info report categories
 	 */
 	public List<String> getProjectInfoReportCategories() {
 		List<ReportPlugin> reportPlugin = getReportPlugin();
@@ -1164,8 +1292,10 @@ public class PomProcessor {
 	}
 
 	/**
-	 * @param reportPlugin
-	 * @return
+	 * Gets the project info report.
+	 *
+	 * @param reportPlugin the report plugin
+	 * @return the project info report
 	 */
 	private List<String> getProjectInfoReport(List<ReportPlugin> reportPlugin) {
 		for (ReportPlugin reportPlugin2 : reportPlugin) {
@@ -1179,7 +1309,9 @@ public class PomProcessor {
 	}
 	
 	/**
-	 * @param reportCategories
+	 * Removes the project info report category.
+	 *
+	 * @param reportCategories the report categories
 	 */
 	public void removeProjectInfoReportCategory(List<ReportCategories> reportCategories){
 		if (reportCategories != null) {
@@ -1195,6 +1327,9 @@ public class PomProcessor {
 		}
 	}
 	
+	/**
+	 * Removes the all reporting plugin.
+	 */
 	public void removeAllReportingPlugin(){
 		com.phresco.pom.model.Reporting.Plugins plugins = model.getReporting().getPlugins();
 		if(model.getReporting() == null && plugins == null){
@@ -1204,7 +1339,9 @@ public class PomProcessor {
 	}
 	
 	/**
-	 * @return
+	 * Gets the sCM.
+	 *
+	 * @return the sCM
 	 */
 	public Scm getSCM() { 
 		if(model.getScm() != null) { 
@@ -1214,11 +1351,12 @@ public class PomProcessor {
 	}
 	
 	/**
-	 * @param connection
-	 * @param developerConnection
-	 * @param url
-	 * @param tag
-	 * @throws PhrescoPomException
+	 * Sets the scm.
+	 *
+	 * @param connection the connection
+	 * @param developerConnection the developer connection
+	 * @param url the url
+	 * @param tag the tag
 	 */
 	
 	public void setSCM(String connection, String developerConnection, String url, String tag) { 
@@ -1255,6 +1393,12 @@ public class PomProcessor {
 		}
 	}
 	
+	/**
+	 * Adds the repositories.
+	 *
+	 * @param repoId the repo id
+	 * @param repoURL the repo url
+	 */
 	public void addRepositories(String repoId, String repoURL) {
 		if(model.getRepositories() != null) {
 			return;
@@ -1270,9 +1414,8 @@ public class PomProcessor {
 	
 	/**
 	 * Save.
-	 * @throws PhrescoPomException 
 	 *
-	 * @throws JAXBException the jAXB exception
+	 * @throws PhrescoPomException the phresco pom exception
 	 */
 	public void save() throws PhrescoPomException  {
 		try {
