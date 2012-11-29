@@ -43,7 +43,7 @@ public class AddExecutionConfigurationTest {
 			element.setTextContent("test");
 			List<Element> configList = new ArrayList<Element>();
 			configList.add(element);
-			processor.addExecutionConfiguration("com.photon.phresco.plugin", "phresco-plugin", "test", "package", "clean", configList, false, document);
+			processor.addExecutionConfiguration("com.photon.phresco.plugin", "phresco-plugin", "test", "package", "clean", configList, document);
 			processor.save();
 			Plugin plugin = processor.getPlugin("com.photon.phresco.plugin", "phresco-plugin");
 			List<PluginExecution> execution = plugin.getExecutions().getExecution();
