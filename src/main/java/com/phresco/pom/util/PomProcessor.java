@@ -152,7 +152,7 @@ public class PomProcessor {
 	 * @throws PhrescoPomException the phresco pom exception
 	 */
 	public void addDependency(String groupId, String artifactId, String version, String scope, String type,String systemPath) throws  PhrescoPomException {
-		if(isDependencyAvailable(groupId, artifactId)){
+		if(isDependencyAvailable(groupId, artifactId,type)){
             changeDependencyVersion(groupId, artifactId, version);
             setDependencySystemPath(groupId, artifactId, systemPath);
             return;
@@ -188,13 +188,14 @@ public class PomProcessor {
 	 * @return
 	 * @throws PhrescoPomException
 	 */
-	public boolean isDependencyAvailable(String groupId,String artifactId) throws PhrescoPomException{
+	public boolean isDependencyAvailable(String groupId, String artifactId, String type) throws PhrescoPomException{
 		if(model.getDependencies()==null) {
 			return false;
 		}
 		List<Dependency> list = model.getDependencies().getDependency();
 		for(Dependency dependency : list){
-			if(dependency.getGroupId().equals(groupId) && dependency.getArtifactId().equals(artifactId)){
+			if(dependency.getGroupId().equals(groupId) && dependency.getArtifactId().equals(artifactId) &&
+					(dependency.getType() != null && dependency.getType().equals(type))){
 				return true;
 			}
 		}
@@ -211,7 +212,7 @@ public class PomProcessor {
 		String groupId = dependency.getGroupId();
 		String artifactId = dependency.getArtifactId();
 		String version = dependency.getVersion();
-		if(isDependencyAvailable(groupId, artifactId)){
+		if(isDependencyAvailable(groupId, artifactId, dependency.getType())){
 			changeDependencyVersion(groupId, artifactId, version);
 			return;
 		}
@@ -291,7 +292,7 @@ public class PomProcessor {
 	 * @throws PhrescoPomException the phresco pom exception
 	 */
 	public void addDependency(String groupId, String artifactId, String version) throws  PhrescoPomException {
-		if(isDependencyAvailable(groupId, artifactId)){
+		if(isDependencyAvailable(groupId, artifactId, null)){
 			changeDependencyVersion(groupId, artifactId, version);
 		}
 		addDependency(groupId, artifactId, version, "");
