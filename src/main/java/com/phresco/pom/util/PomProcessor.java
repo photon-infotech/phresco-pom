@@ -306,14 +306,15 @@ public class PomProcessor {
 	 * @return the boolean
 	 * @throws PhrescoPomException the phresco pom exception
 	 */
-	public Boolean deleteDependency(String groupId, String artifactId) throws PhrescoPomException{
+	public Boolean deleteDependency(String groupId, String artifactId, String packaging) throws PhrescoPomException{
 		boolean isFound = false;
 		if(model.getDependencies()== null) {
 			return isFound;
 		}
 		List<Dependency> list = model.getDependencies().getDependency();
 		for(Dependency dependency : list){
-			if(dependency.getGroupId().equals(groupId) && dependency.getArtifactId().equals(artifactId)){
+			if(dependency.getGroupId().equals(groupId) && dependency.getArtifactId().equals(artifactId) 
+					&& dependency.getType().equals(packaging)){
 				model.getDependencies().getDependency().remove(dependency);
 				isFound = true;
 				break;
@@ -357,10 +358,10 @@ public class PomProcessor {
 	 * @param artifactId the artifact id
 	 * @throws PhrescoPomException the phresco pom exception
 	 */
-	public void deleteAllDependencies(String groupId,String artifactId) throws PhrescoPomException{
+	public void deleteAllDependencies(String groupId,String artifactId, String packaging) throws PhrescoPomException{
 		boolean flag = true;
 		while(flag){
-			flag = deleteDependency(groupId, artifactId);
+			flag = deleteDependency(groupId, artifactId, packaging);
 		}
 	}
 

@@ -42,7 +42,7 @@ public class DeleteDependencyTest {
 	@Test
 	public void validDelete() throws PhrescoPomException {
 			PomProcessor processor = new PomProcessor(new File("pomTest.xml"));
-			processor.deleteDependency("com.suresh.marimuthu", "artifact");
+			processor.deleteDependency("com.suresh.marimuthu", "artifact", "type");
 			processor.save();
 			Assert.assertEquals(2, processor.getModel().getDependencies().getDependency().size());
 	}
@@ -50,7 +50,7 @@ public class DeleteDependencyTest {
 	@Test
 	public void invalidDelete() throws PhrescoPomException {
 			PomProcessor processor = new PomProcessor(new File("pomTest.xml"));
-			processor.deleteDependency("invalid", "invalid");
+			processor.deleteDependency("invalid", "invalid","invalid");
 			processor.save();
 	}
 	
