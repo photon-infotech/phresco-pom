@@ -3,6 +3,7 @@ package com.phresco.pom.site;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -65,6 +66,7 @@ public class Reports implements Serializable{
 
 	public Reports() {
 		super();
+		this.id = UUID.randomUUID().toString();
 	}
 
 	public String getDisplayName() {

@@ -154,7 +154,9 @@ public class PomProcessor {
 	public void addDependency(String groupId, String artifactId, String version, String scope, String type,String systemPath) throws  PhrescoPomException {
 		if(isDependencyAvailable(groupId, artifactId,type)){
             changeDependencyVersion(groupId, artifactId, version);
-            setDependencySystemPath(groupId, artifactId, systemPath);
+            if(StringUtils.isNotEmpty(systemPath)) {
+            	setDependencySystemPath(groupId, artifactId, systemPath);
+            }
             return;
         }
         Dependency dependency = new Dependency();
