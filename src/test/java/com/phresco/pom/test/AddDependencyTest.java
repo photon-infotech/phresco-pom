@@ -28,6 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.phresco.pom.exception.PhrescoPomException;
+import com.phresco.pom.model.Dependency;
 import com.phresco.pom.util.PomProcessor;
 
 public class AddDependencyTest {
@@ -40,7 +41,12 @@ public class AddDependencyTest {
 				file.delete();
 			}
 			PomProcessor processor = new PomProcessor(file);
-			processor.addDependency("com.suresh.marimuthu", "artifact" ,"2.3");
+			Dependency dependency = new Dependency();
+			dependency.setGroupId("com.suresh.marimuthu");
+			dependency.setArtifactId("artifact");
+			dependency.setVersion("2.3");
+			dependency.setType("type");
+			processor.addDependency(dependency);
 			processor.addDependency("com.suresh.marimuthu1", "artifact1" ,"2.3");
 			processor.addDependency("com.suresh.marimuthu2", "artifact2" ,"2.3");
 			processor.save();
