@@ -1187,7 +1187,7 @@ public class PomProcessor {
 	 */
 	public String getPackage() {
 		if(model.getPackaging() == null){
-			return "";
+			return PomConstants.DEFAULT_PACKAGING;
 		}
 		return model.getPackaging();
 	}

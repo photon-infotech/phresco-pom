@@ -26,5 +26,7 @@ public final class PomConstants {
 	public static final String DOXIA_VERSION = "1.2"; 
 	
 	public static final String MVN_SCOPE_SYSTEM = "system"; 
+	
+	public static final String DEFAULT_PACKAGING = "jar";
 
 }
