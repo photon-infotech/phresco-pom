@@ -40,6 +40,8 @@ import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import com.phresco.pom.exception.PhrescoPomException;
 import com.phresco.pom.model.Build;
@@ -709,7 +711,7 @@ public class PomProcessor {
 	} 
 
 	/**
-	 * Gets the plugin configuration value.
+	 * Gets the plugin configuration Element.
 	 *
 	 * @param pluginGroupId the plugin group id
 	 * @param pluginArtifactId the plugin artifact id
@@ -717,19 +719,41 @@ public class PomProcessor {
 	 * @return the plugin configuration value
 	 * @throws PhrescoPomException the phresco pom exception
 	 */
-	public String getPluginConfigurationValue(String pluginGroupId,String pluginArtifactId,String tagName) throws PhrescoPomException{
+	public Element getPluginConfigurationValue(String pluginGroupId,String pluginArtifactId,String tagName) throws PhrescoPomException{
 		Plugin plugin = getPlugin(pluginGroupId, pluginArtifactId);
 		Configuration configuration = plugin.getConfiguration();
 		if(model.getBuild() != null && model.getBuild().getPlugins() != null && configuration !=null) {
 			for (Element config : configuration.getAny()) {
 				if(tagName.equals(config.getTagName())){
-					return config.getTextContent();
+					return config;
 				}	
 			}
 		}
-		return "";
+		return null;
 	}
 	
+	/**
+	 * Gets the plugin configuration.
+	 *
+	 * @param pluginGroupId the plugin group id
+	 * @param pluginArtifactId the plugin artifact id
+	 * @return the plugin configuration
+	 * @throws PhrescoPomException the phresco pom exception
+	 */
+	public com.phresco.pom.model.PluginExecution.Configuration getPluginExecutionConfiguration(String pluginGroupId,String pluginArtifactId) throws PhrescoPomException{
+		Plugin plugin = getPlugin(pluginGroupId, pluginArtifactId);
+		List<PluginExecution> execution = plugin.getExecutions().getExecution();
+		if(execution != null) {
+			for (PluginExecution pluginExecution : execution) {
+				com.phresco.pom.model.PluginExecution.Configuration configuration = pluginExecution.getConfiguration();
+				if(configuration !=null) {				
+					return configuration;
+				}
+			}
+		}		
+		return null;
+	}
+
 	/**
 	 * Adds the plugin dependency.
 	 *
