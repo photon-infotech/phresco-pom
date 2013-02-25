@@ -46,8 +46,8 @@ public class GetPluginConfigurationValueTest {
 			configList.add(element);
 			processor.addConfiguration("com.photon.phresco.plugin", "plugin-artifactID", configList);
 			processor.save();
-			String value = processor.getPluginConfigurationValue("com.photon.phresco.plugin", "plugin-artifactID", "phresco");
-			String actual = value;
+			Element value = processor.getPluginConfigurationValue("com.photon.phresco.plugin", "plugin-artifactID", "phresco");
+			String actual = value.getTextContent();
 			String expected = "phresco";
 			Assert.assertEquals(actual,expected);
 	}
