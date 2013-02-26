@@ -165,9 +165,11 @@ public class PomProcessor {
         dependency.setArtifactId(artifactId);
         dependency.setGroupId(groupId);
         dependency.setVersion(version);
-        if(StringUtils.isNotBlank(scope)){
-            dependency.setScope(scope);
-            if(scope.equals(PomConstants.MVN_SCOPE_SYSTEM)){
+        if(StringUtils.isNotEmpty(scope)){
+        	if(!scope.equals("compile")) {
+        		dependency.setScope(scope);
+        	}
+            if(scope.equals(PomConstants.MVN_SCOPE_SYSTEM)) {
             	dependency.setSystemPath(systemPath);
             }
         }
