@@ -744,12 +744,11 @@ public class PomProcessor {
 	 */
 	public com.phresco.pom.model.PluginExecution.Configuration getPluginExecutionConfiguration(String pluginGroupId,String pluginArtifactId) throws PhrescoPomException{
 		Plugin plugin = getPlugin(pluginGroupId, pluginArtifactId);
-		List<PluginExecution> execution = plugin.getExecutions().getExecution();
-		if(execution != null) {
+		if(plugin.getExecutions() != null && plugin.getExecutions().getExecution() != null) {
+			List<PluginExecution> execution = plugin.getExecutions().getExecution();
 			for (PluginExecution pluginExecution : execution) {
-				com.phresco.pom.model.PluginExecution.Configuration configuration = pluginExecution.getConfiguration();
-				if(configuration !=null) {				
-					return configuration;
+				if(pluginExecution.getConfiguration() != null) {
+					return pluginExecution.getConfiguration();
 				}
 			}
 		}		
