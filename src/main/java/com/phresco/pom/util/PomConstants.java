@@ -28,5 +28,7 @@ public final class PomConstants {
 	public static final String MVN_SCOPE_SYSTEM = "system"; 
 	
 	public static final String DEFAULT_PACKAGING = "jar";
+	
+	public static final String DEFAULT_SCOPE  = "compile";
 
 }

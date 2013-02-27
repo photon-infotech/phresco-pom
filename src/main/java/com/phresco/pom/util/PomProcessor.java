@@ -156,6 +156,7 @@ public class PomProcessor {
 	public void addDependency(String groupId, String artifactId, String version, String scope, String type,String systemPath) throws  PhrescoPomException {
 		if(isDependencyAvailable(groupId, artifactId,type)){
             changeDependencyVersion(groupId, artifactId, version);
+            changeDependencyScope(groupId, artifactId, scope);
             if(StringUtils.isNotEmpty(systemPath)) {
             	setDependencySystemPath(groupId, artifactId, systemPath);
             }
@@ -166,7 +167,7 @@ public class PomProcessor {
         dependency.setGroupId(groupId);
         dependency.setVersion(version);
         if(StringUtils.isNotEmpty(scope)){
-        	if(!scope.equals("compile")) {
+        	if(!scope.equals(PomConstants.DEFAULT_SCOPE)) {
         		dependency.setScope(scope);
         	}
             if(scope.equals(PomConstants.MVN_SCOPE_SYSTEM)) {
@@ -220,6 +221,7 @@ public class PomProcessor {
 		String version = dependency.getVersion();
 		if(isDependencyAvailable(groupId, artifactId, dependency.getType())){
 			changeDependencyVersion(groupId, artifactId, version);
+			changeDependencyScope(groupId, artifactId, dependency.getScope());
 			return;
 		}
 		Dependencies dependencies = model.getDependencies();
@@ -247,6 +249,28 @@ public class PomProcessor {
 		for(Dependency dependency : list){
 			if(dependency.getGroupId().equals(groupId) && dependency.getArtifactId().equals(artifactId)){
 				dependency.setVersion(version);
+			} 
+		}
+	}
+	
+	
+	private void changeDependencyScope(String groupId, String artifactId,String scope) throws PhrescoPomException {
+		if(model.getDependencies()==null){
+			return;
+		}
+		List<Dependency> list = model.getDependencies().getDependency();
+		for(Dependency dependency : list){
+			if(dependency.getGroupId().equals(groupId) && dependency.getArtifactId().equals(artifactId)){
+				 if(StringUtils.isNotEmpty(scope)){
+			        if(!scope.equals(PomConstants.DEFAULT_SCOPE)) {
+			        	dependency.setScope(scope);
+			        }
+			        if(StringUtils.isNotEmpty(dependency.getScope())) {
+				        if(scope.equals(PomConstants.DEFAULT_SCOPE) && !dependency.getScope().equals(PomConstants.DEFAULT_SCOPE)) {
+				        	dependency.setScope(null);
+				        }
+			        }
+				 }
 			} 
 		}
 	}
