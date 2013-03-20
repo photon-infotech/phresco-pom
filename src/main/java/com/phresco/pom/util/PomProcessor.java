@@ -1466,6 +1466,16 @@ public class PomProcessor {
 	}
 	
 	/**
+	 * To chech whether the pom is valid or not
+	 */
+	public boolean isPomValid() {
+		if(model.getGroupId() != null && model.getArtifactId() != null) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
 	 * Save.
 	 *
 	 * @throws PhrescoPomException the phresco pom exception
