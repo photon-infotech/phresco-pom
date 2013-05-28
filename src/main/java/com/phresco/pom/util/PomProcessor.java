@@ -371,10 +371,11 @@ public class PomProcessor {
 		List<Plugin> pluginList = plugins.getPlugin();
 		for (Plugin plugin : pluginList) {
 			if (plugin.getGroupId().equals(groupId) && plugin.getArtifactId().equals(artifactId)) {
+				if(plugin.getDependencies() != null) {
+					plugin.setDependencies(null);
+				}
 				isFound = true;
-			} if (plugin.getDependencies() != null) {
-				plugin.setDependencies(null);
-			}
+			} 
 		}
 		return isFound;
 	}
