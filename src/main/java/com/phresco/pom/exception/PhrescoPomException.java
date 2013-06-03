@@ -77,6 +77,15 @@ public class PhrescoPomException extends Exception {
 		super(cause);
 	}
 
+	/**
+	 * @param code
+	 * @param e
+	 */
+	public PhrescoPomException(POMErrorCode code, Throwable e) {
+		super(e);
+		this.errorCode = code;
+	}
+
 	public POMErrorCode getErrorCode() {
 		return errorCode;
 	}

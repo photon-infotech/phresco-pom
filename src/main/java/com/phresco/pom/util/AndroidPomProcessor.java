@@ -57,8 +57,8 @@ public class AndroidPomProcessor extends PomProcessor {
 		super(pomFile);
 	}
 
+	
 	/**
-	 * 
 	 * @param profileId
 	 * @param defaultGoal
 	 * @param plugin
@@ -66,34 +66,36 @@ public class AndroidPomProcessor extends PomProcessor {
 	 * @param execution
 	 * @param goalElement
 	 * @param additionalConfig
-	 * @param finalName
-	 * @throws JAXBException
+	 * 
 	 * @throws PhrescoPomException
-	 * @throws ParserConfigurationException
 	 */
 	public void setProfile(String profileId,String defaultGoal, Plugin plugin,
 			AndroidProfile androidProfile, PluginExecution execution,
-			Element goalElement, List<Element> additionalConfig) throws JAXBException,
-			PhrescoPomException, ParserConfigurationException {
+			Element goalElement, List<Element> additionalConfig) throws
+			PhrescoPomException {
 		
 		BuildBase base = new BuildBase();
 		Plugins plugins = new Plugins();
 		Executions executions = new Executions();
 		Goals goals = new Goals();
-		
+		try {
 		removeProfile(profileId);
 		DocumentBuilderFactory dbfac = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder = dbfac.newDocumentBuilder();
 		Document doc = docBuilder.newDocument();
+		
 		Element element = doc.createElement(PomConstants.KEYSTORE);
 		element.setTextContent(androidProfile.getKeystore());
 		additionalConfig.add(element);
+		
 		element = doc.createElement(PomConstants.STOREPASS);
 		element.setTextContent(androidProfile.getStorepass());
 		additionalConfig.add(element);
+		
 		element = doc.createElement(PomConstants.KEYPASS);
 		element.setTextContent(androidProfile.getKeypass());
 		additionalConfig.add(element);
+		
 		element = doc.createElement(PomConstants.ALIAS);
 		element.setTextContent(androidProfile.getAlias());
 		additionalConfig.add(element);
@@ -120,9 +122,11 @@ public class AndroidPomProcessor extends PomProcessor {
 			
 			addProfile(profileId, base, null);
 			save();
-			
 		} else {
 			throw new PhrescoPomException(POMErrorCode.KEYSTORE_NOT_FOUND);
+		}
+		} catch (ParserConfigurationException e) {
+			throw new PhrescoPomException(POMErrorCode.INTERNAL_ERROR,e);
 		}
 	}
 
@@ -230,8 +234,8 @@ public class AndroidPomProcessor extends PomProcessor {
 				for (Plugin plugin2 : plugin) {
 					List<PluginExecution> execution = plugin2.getExecutions().getExecution();
 					if(getSigningProfilePlugin(profile, execution).equals(profile.getId())) {
-					return getSigningProfilePlugin(profile, execution);
-				}
+						return getSigningProfilePlugin(profile, execution);
+					}
 				}
 			}
 		}
@@ -255,6 +259,7 @@ public class AndroidPomProcessor extends PomProcessor {
 					}
 				}
 			} 
-		} return "";
+		} 
+		return "";
 	}
 }
