@@ -27,6 +27,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement 
 public class Reports implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1793840535412841558L;
+
 	private String id;
 	
 	private String displayName = "";

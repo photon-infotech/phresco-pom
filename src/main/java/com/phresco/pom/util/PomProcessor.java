@@ -38,8 +38,6 @@ import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import com.phresco.pom.exception.PhrescoPomException;
 import com.phresco.pom.model.Build;
@@ -608,7 +606,7 @@ public class PomProcessor {
 	 * @param configuration the configuration
 	 * @param configElementList the config element list
 	 */
-	private void addArtifactItem(List<Element> configList, Document document,
+	private static void addArtifactItem(List<Element> configList, Document document,
 			PluginExecution execution,
 			com.phresco.pom.model.PluginExecution.Configuration configuration,
 			List<Element> configElementList) {
@@ -646,7 +644,7 @@ public class PomProcessor {
 	 * @param configuration the configuration
 	 * @param addExecution the add execution
 	 */
-	private void createArtifactItems(List<Element> configList, Document document, Plugin plugin, Executions executions,
+	private static void createArtifactItems(List<Element> configList, Document document, Plugin plugin, Executions executions,
 			PluginExecution execution, com.phresco.pom.model.PluginExecution.Configuration configuration,
 			boolean addExecution) {
 		Element artifactItems;
@@ -700,7 +698,7 @@ public class PomProcessor {
 	 * @param goal the goal
 	 * @return the execution
 	 */
-	private PluginExecution getExecution(Executions executions, String executionId, String goal) {
+	private static PluginExecution getExecution(Executions executions, String executionId, String goal) {
 		if (executions.getExecution() != null) {
 			for (PluginExecution pluginExecution : executions.getExecution()) {
 				if (pluginExecution != null && pluginExecution.getId().equals(executionId) && isGoalFound(pluginExecution, goal)) {
@@ -719,7 +717,7 @@ public class PomProcessor {
 	 * @param name the name
 	 * @return true, if is goal found
 	 */
-	private boolean isGoalFound(PluginExecution pluginExecution, String name) {
+	private static boolean isGoalFound(PluginExecution pluginExecution, String name) {
 		Goals goals = pluginExecution.getGoals();
 		if (goals == null) {
 			goals = new Goals();
@@ -1349,7 +1347,7 @@ public class PomProcessor {
 	 * @param reportPlugin the report plugin
 	 * @return the project info report
 	 */
-	private List<String> getProjectInfoReport(List<ReportPlugin> reportPlugin) {
+	private static List<String> getProjectInfoReport(List<ReportPlugin> reportPlugin) {
 		for (ReportPlugin reportPlugin2 : reportPlugin) {
 			if(reportPlugin2.getGroupId().equals(Reports.PROJECT_INFO.getGroupId()) && reportPlugin2.getArtifactId().equals(Reports.PROJECT_INFO.getArtifactId())){
 				List<ReportSet> reportSet = reportPlugin2.getReportSets().getReportSet();
