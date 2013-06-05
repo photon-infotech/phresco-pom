@@ -47,5 +47,5 @@ import org.junit.runners.Suite.SuiteClasses;
 	AndroidPomProcessorTest.class}
 	 )
 public class AllTests {
-
+// intentionally blank. All tests were added via annotations
 }

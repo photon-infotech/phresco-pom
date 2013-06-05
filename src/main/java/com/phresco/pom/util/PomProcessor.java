@@ -94,6 +94,7 @@ public class PomProcessor {
 	 * @param pomFile the pom file
 	 * @throws PhrescoPomException the phresco pom exception
 	 */
+	@SuppressWarnings("rawtypes")
 	public PomProcessor(File pomFile) throws PhrescoPomException {
 		try {
 			if(pomFile.exists()){
@@ -119,6 +120,7 @@ public class PomProcessor {
 	 * @throws JAXBException the jAXB exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
+	@SuppressWarnings("rawtypes")
 	public PomProcessor(InputStream inputStream) throws JAXBException, IOException {
         JAXBContext jaxbContext = JAXBContext.newInstance(Model.class);
         Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();

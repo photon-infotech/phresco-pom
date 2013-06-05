@@ -17,7 +17,6 @@
  */
 package com.phresco.pom.exception;
 
-import com.phresco.pom.util.POMErrorCode;
 
 /**
  * @author suresh_ma

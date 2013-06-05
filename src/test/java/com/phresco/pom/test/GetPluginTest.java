@@ -26,8 +26,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.phresco.pom.exception.POMErrorCode;
 import com.phresco.pom.exception.PhrescoPomException;
-import com.phresco.pom.util.POMErrorCode;
 import com.phresco.pom.util.PomProcessor;
 
 public class GetPluginTest {
