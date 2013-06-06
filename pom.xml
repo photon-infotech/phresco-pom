@@ -4,7 +4,7 @@
     <groupId>com.photon.phresco.pom</groupId>
     <artifactId>phrecso-pom</artifactId>
     <packaging>jar</packaging>
-    <name>phresco-pom</name>
+    <name>Phresco Pom</name>
     <version>3.0.0.12001-SNAPSHOT</version>
     <description>phresco-Pom</description>
     <url>http://www.phresco.org</url>
