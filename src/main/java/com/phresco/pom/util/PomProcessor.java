@@ -489,6 +489,9 @@ public class PomProcessor {
 	 * @throws PhrescoPomException the phresco pom exception
 	 */
 	public void deletePlugin(String groupId,String artifactId) throws PhrescoPomException {
+		if(model.getBuild() == null || model.getBuild().getPlugins() == null) {
+			return;
+		}
 		Plugin plugin = getPlugin(groupId, artifactId);
 		if(plugin != null) {
 			model.getBuild().getPlugins().getPlugin().remove(plugin);
