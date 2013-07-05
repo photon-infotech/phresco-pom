@@ -5,7 +5,7 @@
     <artifactId>phresco-pom</artifactId>
     <packaging>jar</packaging>
     <name>Phresco Pom</name>
-    <version>3.0.0.15004-SNAPSHOT</version>
+    <version>3.0.0.16001-SNAPSHOT</version>
     <description>phresco-Pom</description>
     <url>http://www.phresco.org</url>
     <build>
