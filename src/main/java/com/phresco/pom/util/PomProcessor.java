@@ -891,6 +891,27 @@ public class PomProcessor {
 		}
 		return "";
 	}
+	
+	/**
+	 * Removes the property.
+	 *
+	 * @param propertyName the property name
+	 * @return true, if successful
+	 */
+	public boolean removeProperty(String propertyName) {
+		boolean status = false;
+		if(model.getProperties()==null) {
+			return status;
+		}
+		List<Element> property = model.getProperties().getAny();
+		for (Element element : property) {
+			if(propertyName.equals(element.getTagName())) {
+				property.remove(element);
+				return true;
+			}
+		}
+		return status;
+	}
 
 	/**
 	 * Adds the module.
