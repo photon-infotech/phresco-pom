@@ -342,11 +342,15 @@ public class PomProcessor {
 		List<Dependency> list = model.getDependencies().getDependency();
 		for(Dependency dependency : list){
 			if(dependency.getGroupId().equals(groupId) && dependency.getArtifactId().equals(artifactId) 
-					&& dependency.getType().equals(packaging)){
+					&& StringUtils.isNotEmpty(dependency.getType()) && dependency.getType().equals(packaging)){
 				model.getDependencies().getDependency().remove(dependency);
 				isFound = true;
 				break;
-			} 
+			} else if (dependency.getGroupId().equals(groupId) && dependency.getArtifactId().equals(artifactId)) {
+				model.getDependencies().getDependency().remove(dependency);
+				isFound = true;
+				break;
+			}
 		}
 		if(model.getDependencies().getDependency().isEmpty()){
 			model.setDependencies(null);
