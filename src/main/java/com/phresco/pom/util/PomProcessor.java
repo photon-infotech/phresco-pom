@@ -687,14 +687,13 @@ public class PomProcessor {
 			if (plugin != null) {
 				Executions executions = plugin.getExecutions();
 				PluginExecution execution = getExecution(executions, executionId, goal);
-				if (execution != null) {
-					execution.setConfiguration(null);
-				}
+				executions.getExecution().remove(execution);
 			}
 		} catch (PhrescoPomException e) {
 			throw new PhrescoPomException(e);
 		}
 	}
+
 	
 	/**
 	 * Gets the execution.
