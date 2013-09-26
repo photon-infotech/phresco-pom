@@ -33,18 +33,26 @@ public class RemoveAllDependencyTest {
 
 	@Before
 	public void prepare() throws PhrescoPomException {
-		AddDependencyTest addTest = new AddDependencyTest();
-		addTest.prepare();
+
 	}
 
 	@Test
 	public void validRemoveAllDependency() throws PhrescoPomException {
-			PomProcessor processor = new PomProcessor(new File("pomTest.xml"));
-			processor.removeAllDependencies();
-			processor.save();
-			Dependencies actual = processor.getModel().getDependencies();
-			Dependencies expected = null;
-			Assert.assertEquals(expected, actual);
+		AddDependencyTest addTest = new AddDependencyTest();
+		addTest.prepare();	
+		PomProcessor processor = new PomProcessor(new File("pomTest.xml"));
+		processor.removeAllDependencies();
+		processor.save();
+		Dependencies actual = processor.getModel().getDependencies();
+		Dependencies expected = null;
+		Assert.assertEquals(expected, actual);
+
+	}
+	@Test
+	public void validRemoveAllDependencyNull() throws PhrescoPomException {
+		PomProcessor processor = new PomProcessor(new File("pomTest.xml"));
+		processor.removeAllDependencies();
+		processor.save();
 
 	}
 	@After

@@ -69,6 +69,26 @@ public class GetPluginConfigurationValueTest {
 			Assert.assertEquals(actual,expected);
 	}
 	
+	@Test
+	public void getPluginConfigurationValueNullTest() throws PhrescoPomException, ParserConfigurationException {
+			PomProcessor processor = new PomProcessor(new File("pomTest.xml"));
+			processor.addPlugin("com.photon.phresco.plugin", "plugin-artifactID", "2.0");
+			processor.save();
+			DocumentBuilderFactory builder = DocumentBuilderFactory.newInstance();
+			DocumentBuilder documentBuilder = builder.newDocumentBuilder();
+			Document document = documentBuilder.newDocument();
+			Element element = document.createElement("phresco");
+			element.setTextContent("phresco");
+			List<Element> configList = new ArrayList<Element>();
+			configList.add(element);
+			element = document.createElement("photon");
+			element.setTextContent("photon");
+			configList.add(element);
+			processor.save();
+			Element value = processor.getPluginConfigurationValue("com.photon.phresco.plugin", "plugin-artifactID", "phresco");
+			Assert.assertNull(value);
+	}
+	
 	@After
 	public void delete(){
 		File file = new File("pomTest.xml");

@@ -202,6 +202,8 @@ public class PomProcessor {
 			if(dependency.getGroupId().equals(groupId) && dependency.getArtifactId().equals(artifactId) &&
 					(dependency.getType() != null && dependency.getType().equals(type))){
 				return true;
+			} else if (dependency.getGroupId().equals(groupId) && dependency.getArtifactId().equals(artifactId)) {
+				return true;
 			}
 		}
 		return false;
@@ -1039,7 +1041,7 @@ public class PomProcessor {
 	 * @throws PhrescoPomException the phresco pom exception
 	 */
 	public static void main(String[] args) throws JAXBException, IOException, PhrescoPomException {
-		PomProcessor p = new PomProcessor(new File("D:\\pom\\pom.xml"));
+		PomProcessor p = new PomProcessor(new File("pomTest.xml"));
 		BuildBase build = new BuildBase();
 		build.setFinalName("FinalName");
 		build.setDirectory("Directory");
@@ -1127,10 +1129,10 @@ public class PomProcessor {
 	 * @param artifactId the artifact id
 	 */
 	public void removeSitePlugin(String groupId,String artifactId) {
-		com.phresco.pom.model.Reporting.Plugins plugins = model.getReporting().getPlugins();
-		if(model.getReporting() == null && plugins == null){
+		if(model.getReporting()==null || model.getReporting().getPlugins()==null){
 			return;
 		}
+		com.phresco.pom.model.Reporting.Plugins plugins = model.getReporting().getPlugins();
 		for (ReportPlugin plugin : plugins.getPlugin()) {
 			if(groupId.equals(plugin.getGroupId()) && artifactId.equals(plugin.getArtifactId())){
 				plugins.getPlugin().remove(plugin);
@@ -1407,10 +1409,10 @@ public class PomProcessor {
 	 * Removes the all reporting plugin.
 	 */
 	public void removeAllReportingPlugin(){
-		com.phresco.pom.model.Reporting.Plugins plugins = model.getReporting().getPlugins();
-		if(model.getReporting() == null && plugins == null){
+		if(model.getReporting()==null || model.getReporting().getPlugins()==null){
 			return;
 		}
+		com.phresco.pom.model.Reporting.Plugins plugins = model.getReporting().getPlugins();
 		model.getReporting().getPlugins().getPlugin().removeAll(getReportPlugin());
 	}
 	

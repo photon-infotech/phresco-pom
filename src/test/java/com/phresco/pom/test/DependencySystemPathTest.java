@@ -57,6 +57,14 @@ public class DependencySystemPathTest {
 	}
 	
 	@Test
+	public void validSetDependencySystemPathNull() throws PhrescoPomException {
+		String systemPath = "";
+		PomProcessor processor = new PomProcessor(new File("pomTest.xml"));
+		processor.setDependencySystemPath("com.photon.phresco.test11", "com.photon.phresco.test", "SystemPath");
+		processor.save();
+		Assert.assertNull(processor.getModel().getDependencies());
+	}
+	@Test
 	public void invalidSetDependencySystemPath() throws PhrescoPomException {
 		String systemPath = "";
 		PomProcessor processor = new PomProcessor(new File("pomTest.xml"));

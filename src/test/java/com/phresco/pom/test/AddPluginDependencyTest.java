@@ -18,6 +18,7 @@
 package com.phresco.pom.test;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -63,11 +64,34 @@ public class AddPluginDependencyTest {
 		String expected = "phresco";
 		Assert.assertEquals(actual, expected);
 	}
+	
+	@Test
+	public void validAddPluginDependencyNull() throws PhrescoPomException {
+		String artifactId = "";
+		PomProcessor processor = new PomProcessor(new File("pomTest1.xml"));
+		processor.addPlugin("com.photon.phresco.plugin", "phresco-mavn-plugin", "2.0");
+		Dependency dependency = new Dependency();
+		dependency.setArtifactId("phresco");
+		dependency.setGroupId("photon");
+		processor.addPluginDependency("com.photon.phresco.plugin", "phresco-mavn-plugin", dependency);
+		processor.save();
+		Plugin plugin = processor.getPlugin("com.photon.phresco.plugin", "phresco-mavn-plugin");
+		List<Dependency> dep = plugin.getDependencies().getDependency();
+		for (Dependency depend : dep) {
+			artifactId = depend.getArtifactId();
+		}
+		String actual = artifactId;
+		Assert.assertEquals("phresco",actual);
+	}
 	@After
-	public void delete(){
+	public void delete() throws IOException{
 		File file = new File("pomTest.xml");
 		if(file.exists()) {
 			file.delete();
+		}
+		File file1 = new File("pomTest1.xml");
+		if(file1.exists()) {
+			file1.delete();
 		}
 	}
 

@@ -27,6 +27,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.phresco.pom.exception.PhrescoPomException;
+import com.phresco.pom.model.Build;
+import com.phresco.pom.model.Build.Plugins;
 import com.phresco.pom.model.Plugin;
 import com.phresco.pom.util.PomProcessor;
 
@@ -49,6 +51,23 @@ public class DeletePluginTest {
 		processor.save();
 		Plugin plugin = processor.getPlugin("com.photon.phresco.plugin", "phresco-maven-plugin");
 		Plugin actual = plugin;
+		Plugin expected = null;
+		Assert.assertEquals(expected, actual);
+	}
+	
+	@Test
+	public void deletePluginTestBranch() throws PhrescoPomException{
+		PomProcessor processor = new PomProcessor(new File("pomTest.xml"));
+		Build build=new Build();
+		Plugins plugins=new Plugins();
+		Plugin plugin=new Plugin();
+		plugins.getPlugin().add(plugin);
+		build.setPlugins(plugins);
+		processor.getModel().setBuild(build);
+		processor.deletePlugin("com.photon.phresco.plugin", "phresco-maven-plugin");
+		processor.save();
+		Plugin plugin1 = processor.getPlugin("com.photon.phresco.plugin", "phresco-maven-plugin");
+		Plugin actual = plugin1;
 		Plugin expected = null;
 		Assert.assertEquals(expected, actual);
 	}

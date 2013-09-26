@@ -111,9 +111,6 @@ public class AndroidPomProcessor extends PomProcessor {
 			plugin.setExecutions(executions);
 			plugin.setGoals(goals);
 			plugin.getGoals().getAny().add(goalElement);
-			if(plugin.getGoals().getAny().isEmpty()) {
-				plugin.setGoals(null);
-			}
 			execution.getConfiguration().getAny().addAll(additionalConfig);
 			plugin.getExecutions().getExecution().add(execution);
 //			plugin.setConfiguration(configuration);

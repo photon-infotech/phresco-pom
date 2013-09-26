@@ -46,6 +46,14 @@ public class ChangeDependencyVersionTest {
 			Assert.assertEquals(expected, actual);
 
 	}
+	@Test
+	public void ChangeDependencyVersionNull() throws PhrescoPomException {
+			PomProcessor processor = new PomProcessor(new File("pomTest1.xml"));
+			processor.changeDependencyVersion("com.suresh.marimuthuc", "artifact","2.2.2");
+			processor.save();
+			Assert.assertNull(processor.getModel().getDependencies());
+
+	}
 
 	@Test
 	public void invalidChangeDependencyVersion() throws PhrescoPomException {
@@ -58,8 +66,12 @@ public class ChangeDependencyVersionTest {
 	@After
 	public void delete(){
 		File file = new File("pomTest.xml");
+		File file1 = new File("pomTest1.xml");
 		if(file.exists()) {
 			file.delete();
+		}
+		if(file1.exists()) {
+			file1.delete();
 		}
 	}
 }

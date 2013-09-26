@@ -47,6 +47,15 @@ public class AddPluginTest {
 		Assert.assertEquals(2, processor.getModel().getBuild().getPlugins().getPlugin().size());
 	}
 	
+	@Test
+	public void validAddPluginExisting() throws PhrescoPomException {
+		PomProcessor processor = new PomProcessor(new File("pomTest.xml"));
+		processor.addPlugin("phresco", "photon","2.2");
+		processor.save();
+		processor.addPlugin("phresco", "photon","2.2");
+		Assert.assertEquals(1, processor.getModel().getBuild().getPlugins().getPlugin().size());
+	}
+	
 	@After
 	public void delete() {
 		File file = new File("pomTest.xml");

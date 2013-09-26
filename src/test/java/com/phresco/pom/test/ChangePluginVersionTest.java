@@ -57,6 +57,9 @@ public class ChangePluginVersionTest {
 			processor.addPlugin("phresco", "photon", "1.2");
 			processor.changePluginVersion("invalid", "photon", "2.2.2");
 			processor.save();
+			String actual = processor.getModel().getBuild().getPlugins().getPlugin().get(1).getVersion();
+			String expected = "1.2";
+			Assert.assertEquals(actual,expected);
 	}
 	
 	@After
