@@ -171,10 +171,12 @@ public class AndroidPomProcessor extends PomProcessor {
 			for(Profile profile : getModel().getProfiles().getProfile()){
 				List<Plugin> plugin = profile.getBuild().getPlugins().getPlugin();
 				for (Plugin plugin2 : plugin) {
+					if (plugin2.getExecutions() != null && !plugin2.getExecutions().getExecution().isEmpty()) {
 					List<PluginExecution> execution = plugin2.getExecutions().getExecution();
 					if(getSigningProfilePlugin(profile, execution).equals("")){
 						return true;
 					}
+				  }
 				}
 			}
 		} return false;
