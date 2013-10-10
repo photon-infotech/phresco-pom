@@ -194,20 +194,25 @@ public class PomProcessor {
 	 * @throws PhrescoPomException
 	 */
 	public boolean isDependencyAvailable(String groupId, String artifactId, String type) throws PhrescoPomException{
-		if(model.getDependencies()==null) {
-			return false;
-		}
-		List<Dependency> list = model.getDependencies().getDependency();
-		for(Dependency dependency : list){
-			if(dependency.getGroupId().equals(groupId) && dependency.getArtifactId().equals(artifactId) &&
-					(dependency.getType() != null && dependency.getType().equals(type))){
-				return true;
-			} else if (dependency.getGroupId().equals(groupId) && dependency.getArtifactId().equals(artifactId)) {
-				return true;
-			}
-		}
-		return false;
-	}
+        if(model.getDependencies()==null) {
+                return false;
+        }
+        boolean check = false;
+        List<Dependency> list = model.getDependencies().getDependency();
+        for(Dependency dependency : list){
+                if (StringUtils.isNotEmpty(type)) {
+                        if(dependency.getGroupId().equals(groupId) && dependency.getArtifactId().equals(artifactId) &&
+                                        (dependency.getType() != null && dependency.getType().equals(type))){
+                                check = true;
+                        } else {
+                                check = false;
+                        }
+                } else if (dependency.getGroupId().equals(groupId) && dependency.getArtifactId().equals(artifactId)) {
+                        check = true;
+                }
+        }
+        return check;
+   }
 
 	/**
 	 * Adds the dependency.
