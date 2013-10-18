@@ -112,7 +112,7 @@ public class AddDependencyTest {
 		dependency.setVersion("2.3");
 		dependency.setType("type");
 		processor.addDependency(dependency);
-		Assert.assertEquals(3, processor.getModel().getDependencies().getDependency().size());
+		Assert.assertEquals(4, processor.getModel().getDependencies().getDependency().size());
 	}
 	
 	
@@ -126,7 +126,7 @@ public class AddDependencyTest {
 		dependency.setType("type");
 		dependency.setScope("compile");
 		processor.addDependency(dependency);
-		Assert.assertEquals(3, processor.getModel().getDependencies().getDependency().size());
+		Assert.assertEquals(4, processor.getModel().getDependencies().getDependency().size());
 	
 	}
 	@Test
