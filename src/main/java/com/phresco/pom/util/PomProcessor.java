@@ -496,9 +496,10 @@ public class PomProcessor {
 	 */
 	public void deletePlugin(String groupId,String artifactId) throws PhrescoPomException {
 		Plugin plugin = getPlugin(groupId, artifactId);
-		if(plugin != null) {
-			model.getBuild().getPlugins().getPlugin().remove(plugin);
+		if(plugin == null) {
+			return;
 		} 
+		model.getBuild().getPlugins().getPlugin().remove(plugin);
 		if(model.getBuild().getPlugins().getPlugin().isEmpty()){
 			model.getBuild().setPlugins(null);
 		}
