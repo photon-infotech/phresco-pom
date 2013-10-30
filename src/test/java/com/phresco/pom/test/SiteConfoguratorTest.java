@@ -17,9 +17,6 @@
  */
 package com.phresco.pom.test;
 
-import static org.easymock.EasyMock.expect;
-import static org.powermock.api.easymock.PowerMock.replay;
-
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -27,31 +24,21 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.PropertyException;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.powermock.api.easymock.PowerMock;
 
 import com.phresco.pom.exception.PhrescoPomException;
-import com.phresco.pom.model.Model;
-import com.phresco.pom.model.Profile;
-import com.phresco.pom.model.Model.Profiles;
 import com.phresco.pom.model.ReportPlugin;
 import com.phresco.pom.model.ReportPlugin.ReportSets;
 import com.phresco.pom.model.ReportSet;
 import com.phresco.pom.site.ReportCategories;
 import com.phresco.pom.site.Reports;
-import com.phresco.pom.util.AndroidPomProcessor;
 import com.phresco.pom.util.PomProcessor;
 import com.phresco.pom.util.SiteConfigurator;
 
@@ -162,7 +149,7 @@ public class SiteConfoguratorTest {
 				reportCategories = reports.getReportCategories();
 			}
 		}
-		Assert.assertEquals(reportCategories.size(), 4);
+		Assert.assertEquals(4, reportCategories.size());
 	}
 
 	@Test

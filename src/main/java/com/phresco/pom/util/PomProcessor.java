@@ -19,11 +19,15 @@ package com.phresco.pom.util;
 
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.Binder;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -33,11 +37,20 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 import com.phresco.pom.exception.PhrescoPomException;
 import com.phresco.pom.model.Build;
@@ -87,6 +100,12 @@ public class PomProcessor {
 
 	/** The file. */
 	private File file;
+	
+	/** Binder. */
+	private Binder<Node> binder;
+	
+	/** Document. */
+	private Document document;
 
 	/**
 	 * Instantiates a new pom processor.
@@ -99,8 +118,12 @@ public class PomProcessor {
 		try {
 			if(pomFile.exists()){
 				JAXBContext jaxbContext = JAXBContext.newInstance(Model.class);
-				Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-				model = (Model) ((JAXBElement)jaxbUnmarshaller.unmarshal(pomFile)).getValue();
+		        FileInputStream stream = new FileInputStream(pomFile);
+		        DocumentBuilder db = getDocumentBuilder();
+		        document = db.parse(stream);
+		        
+		        binder = jaxbContext.createBinder();
+		        model = (Model) binder.unmarshal(document);
 			} else {
 				pomFile.createNewFile();
 				model = new Model();
@@ -109,6 +132,20 @@ public class PomProcessor {
 		} catch (JAXBException e) {
 			throw new PhrescoPomException(e);
 		} catch (IOException e) {
+			throw new PhrescoPomException(e);
+		} catch (SAXException e) {
+			throw new PhrescoPomException(e);
+		} catch (PhrescoPomException e) {
+			throw new PhrescoPomException(e);
+		}
+	}
+	
+	public DocumentBuilder getDocumentBuilder() throws PhrescoPomException {
+		try {
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			dbf.setNamespaceAware(Boolean.TRUE);
+			return dbf.newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
 			throw new PhrescoPomException(e);
 		}
 	}
@@ -119,12 +156,23 @@ public class PomProcessor {
 	 * @param inputStream the input stream
 	 * @throws JAXBException the jAXB exception
 	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws PhrescoPomException 
 	 */
 	@SuppressWarnings("rawtypes")
-	public PomProcessor(InputStream inputStream) throws JAXBException, IOException {
-        JAXBContext jaxbContext = JAXBContext.newInstance(Model.class);
-        Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-        model = (Model) ((JAXBElement)jaxbUnmarshaller.unmarshal(inputStream)).getValue();
+	public PomProcessor(InputStream inputStream) throws PhrescoPomException {
+		try {
+			JAXBContext jaxbContext = JAXBContext.newInstance(Model.class);
+			DocumentBuilder db = getDocumentBuilder();
+			document = db.parse(inputStream);
+			binder = jaxbContext.createBinder();
+	        model = (Model) binder.unmarshal(document);
+		} catch (SAXException e) {
+			throw new PhrescoPomException(e);
+		} catch (IOException e) {
+			throw new PhrescoPomException(e);
+		} catch (JAXBException e) {
+			throw new PhrescoPomException(e);
+		}
 	}
 	
 	/**
@@ -1102,7 +1150,7 @@ public class PomProcessor {
 	 * @throws PhrescoPomException the phresco pom exception
 	 */
 	public Profile getProfile(String id) throws PhrescoPomException {
-		if(model.getProfiles().getProfile() != null){
+		if(model.getProfiles() != null && model.getProfiles().getProfile() != null) {
 			for(Profile profile : model.getProfiles().getProfile()){
 				if(id.equals(profile.getId())) {
 					return profile;
@@ -1392,6 +1440,18 @@ public class PomProcessor {
 		} return null;
 	}
 	
+	private ReportPlugin getReportPlugin(Reports reports) {
+		if (model.getReporting() != null) {
+			List<ReportPlugin> plugin = model.getReporting().getPlugins().getPlugin();
+			for (ReportPlugin reportPlugin : plugin) {
+				if (reports.getArtifactId().equals(reportPlugin.getArtifactId()) && reports.getGroupId().equals(reportPlugin.getGroupId())) {
+					return reportPlugin;
+				}
+			}
+		}
+		return null;
+	}
+	
 	/**
 	 * Removes the project info report category.
 	 *
@@ -1403,11 +1463,21 @@ public class PomProcessor {
 			List<String> projectInfoReportCategories = getProjectInfoReportCategories();
 			for (String string : projectInfoReportCategories) {
 				for (ReportCategories reportCategoriesList : reportCategories) {
-					if(reportCategoriesList.getName().equals(string)){
+					if(reportCategoriesList.getName().equals(string)) {
 						removeList.add(string);
 					} 
 				} 
 			} projectInfoReportCategories.removeAll(removeList);
+			ReportPlugin reportPlugin = getReportPlugin(Reports.PROJECT_INFO);
+			List<ReportSet> reportSets = reportPlugin.getReportSets().getReportSet();
+			reportSets.get(0).setReports(null);
+			com.phresco.pom.model.ReportSet.Reports reports = new com.phresco.pom.model.ReportSet.Reports();
+			if (projectInfoReportCategories != null) {
+				for (String projectInfoReportCategorie : projectInfoReportCategories) {
+					reports.getReport().add(projectInfoReportCategorie);
+				}
+				reportSets.get(0).setReports(reports);
+			}
 		}
 	}
 	
@@ -1512,6 +1582,38 @@ public class PomProcessor {
 	 * @throws PhrescoPomException the phresco pom exception
 	 */
 	public void save() throws PhrescoPomException  {
+		try {
+			if(document == null || binder == null) {
+				saveMarshall();
+				return;
+			}
+			Node updateXML = binder.updateXML(model);
+			
+	        TransformerFactory tf = TransformerFactory.newInstance();
+	        Transformer t = tf.newTransformer();
+	        t.setOutputProperty(OutputKeys.INDENT, "yes");
+	        t.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+	        FileOutputStream outputStream = new FileOutputStream(file);
+	        t.transform(new DOMSource(updateXML), new StreamResult(outputStream));
+	        outputStream.close();
+		} catch (PropertyException e) {
+			throw new PhrescoPomException(e);
+		} catch (JAXBException e) {
+			throw new PhrescoPomException(e);
+		} catch (TransformerConfigurationException e) {
+			throw new PhrescoPomException(e);
+		} catch (TransformerException e) {
+			throw new PhrescoPomException(e);
+		} catch (FileNotFoundException e) {
+			throw new PhrescoPomException(e);
+		} catch (IOException e) {
+			throw new PhrescoPomException(e);
+		} catch (PhrescoPomException e) {
+			throw new PhrescoPomException(e);
+		} 
+	}
+	
+	public void saveMarshall() throws PhrescoPomException {
 		try {
 			JAXBContext jaxbContext = JAXBContext.newInstance(Model.class);
 			Marshaller marshal = jaxbContext.createMarshaller();

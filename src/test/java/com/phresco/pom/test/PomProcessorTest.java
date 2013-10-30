@@ -83,8 +83,6 @@ public class PomProcessorTest {
 		InputStream in=new FileInputStream(file);
 		PomProcessor processor = new PomProcessor(in);
 		Assert.assertEquals("com.photon.phresco", processor.getGroupId());
-
-
 	}
 
 
@@ -193,7 +191,10 @@ public class PomProcessorTest {
 	public void addConfiguration() throws PhrescoPomException{
 		PomProcessor processor = new PomProcessor(new File("pomTest.xml"));
 		List<Element> configList=new ArrayList<Element>();
-		Element element = null;
+		DocumentBuilder db = processor.getDocumentBuilder();
+		Document document = db.newDocument();
+		Element element = document.createElement("test");
+		element.setTextContent("test");
 		configList.add(element);
 		Plugin plugin=processor.addPlugin("com.photon.phresco", "test","1.1");
 		Configuration conf=processor.addConfiguration("com.photon.phresco", "test", configList);
@@ -206,7 +207,10 @@ public class PomProcessorTest {
 	public void addConfiguration1() throws PhrescoPomException{
 		PomProcessor processor = new PomProcessor(new File("pomTest.xml"));
 		List<Element> configList=new ArrayList<Element>();
-		Element element = null;
+		DocumentBuilder db = processor.getDocumentBuilder();
+		Document document = db.newDocument();
+		Element element = document.createElement("test");
+		element.setTextContent("test");
 		configList.add(element);
 		Plugin plugin=processor.addPlugin("com.photon.phresco", "test","1.1");
 		Configuration conf=processor.addConfiguration("com.photon.phresco", "test", configList,true);
