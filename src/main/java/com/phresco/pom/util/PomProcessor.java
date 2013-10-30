@@ -1097,7 +1097,7 @@ public class PomProcessor {
 	 * @throws PhrescoPomException the phresco pom exception
 	 */
 	public Profile getProfile(String id) throws PhrescoPomException {
-		if(model.getProfiles().getProfile() != null){
+		if(model.getProfiles() != null && model.getProfiles().getProfile() != null) {
 			for(Profile profile : model.getProfiles().getProfile()){
 				if(id.equals(profile.getId())) {
 					return profile;
