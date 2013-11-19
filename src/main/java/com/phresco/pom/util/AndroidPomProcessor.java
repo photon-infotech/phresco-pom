@@ -107,19 +107,19 @@ public class AndroidPomProcessor extends PomProcessor {
 			
 			base.setDefaultGoal(defaultGoal);
 			base.setFinalName(PomConstants.FINAL_NAME);
-
-			plugin.setExecutions(executions);
+		    plugin.setExecutions(executions);
 			plugin.setGoals(goals);
-			plugin.getGoals().getAny().add(goalElement);
+			if (goalElement != null) {
+				plugin.getGoals().getAny().add(goalElement);
+			}
 			execution.getConfiguration().getAny().addAll(additionalConfig);
 			plugin.getExecutions().getExecution().add(execution);
 //			plugin.setConfiguration(configuration);
 //			plugin.getConfiguration().getAny().addAll(additionalConfig);
 			plugins.getPlugin().add(plugin);
 			base.setPlugins(plugins);
-			
 			addProfile(profileId, base, null);
-			save();
+		    save();
 		} else {
 			throw new PhrescoPomException(POMErrorCode.KEYSTORE_NOT_FOUND);
 		}
@@ -179,6 +179,7 @@ public class AndroidPomProcessor extends PomProcessor {
 				  }
 				}
 			}
+			
 		} return false;
 	}
 	
