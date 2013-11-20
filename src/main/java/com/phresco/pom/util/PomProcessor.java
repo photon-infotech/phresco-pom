@@ -251,12 +251,12 @@ public class PomProcessor {
                 if (StringUtils.isNotEmpty(type)) {
                         if(dependency.getGroupId().equals(groupId) && dependency.getArtifactId().equals(artifactId) &&
                                         (dependency.getType() != null && dependency.getType().equals(type))){
-                                check = true;
+                                return true;
                         } else {
                                 check = false;
                         }
                 } else if (dependency.getGroupId().equals(groupId) && dependency.getArtifactId().equals(artifactId)) {
-                        check = true;
+                               return true;
                 }
         }
         return check;
