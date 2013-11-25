@@ -247,17 +247,20 @@ public class PomProcessor {
         }
         boolean check = false;
         List<Dependency> list = model.getDependencies().getDependency();
-        for(Dependency dependency : list){
+         
+          for(Dependency dependency : list){
                 if (StringUtils.isNotEmpty(type)) {
-                        if(dependency.getGroupId().equals(groupId) && dependency.getArtifactId().equals(artifactId) &&
-                                        (dependency.getType() != null && dependency.getType().equals(type))){
-                                check = true;
-                        } else {
-                                check = false;
-                        }
+                	if(dependency.getGroupId().equals(groupId) && dependency.getArtifactId().equals(artifactId) &&
+                              (dependency.getType() != null && dependency.getType().equals(type))){
+                		        return true;
+                		       
+                      } else {
+                        	   check = false;
+                      }
                 } else if (dependency.getGroupId().equals(groupId) && dependency.getArtifactId().equals(artifactId)) {
-                        check = true;
-                }
+                	          return true;
+                	          
+             }
         }
         return check;
    }
