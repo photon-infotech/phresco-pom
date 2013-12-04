@@ -1034,8 +1034,10 @@ public class PomProcessor {
 		for(String moduleNames : model.getModules().getModule()) {
 			if(moduleName.equals(moduleNames)) {
 				model.getModules().getModule().remove(moduleNames);
-				if(model.getModules().getModule().isEmpty()) {
-					model.setModules(null);
+				List<String> modules = model.getModules().getModule();
+				model.setModules(null);
+				for (String string : modules) {
+					addModule(string);
 				}
 				break;
 			}
