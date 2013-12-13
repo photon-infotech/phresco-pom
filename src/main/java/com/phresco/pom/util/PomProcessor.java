@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.bind.Binder;
 import javax.xml.bind.JAXBContext;
@@ -948,10 +950,33 @@ public class PomProcessor {
 		int size = model.getProperties().getAny().size();
 		for(int i=0;i<size;i++) { 
 			if(propertyName.equals(property.get(i).getTagName())) {
-				return property.get(i).getTextContent();
+				String textContent = property.get(i).getTextContent();
+				if (textContent.contains("${")) {
+					textContent = getMavenVariableProp(textContent);
+				}
+				return textContent;
 			}
 		}
 		return "";
+	}
+	
+	private String getMavenVariableProp(String prop) throws PhrescoPomException {
+		StringBuilder builder = new StringBuilder();
+		String replaceString = prop.replace("${", "");
+		String replace = replaceString.replace("}", "");
+		String[] split = replace.split("/");
+		for (String splittedProp : split) {
+			if (StringUtils.isNotEmpty(splittedProp)) {
+				builder.append(File.separator);
+			}
+			String propertyValue = getProperty(splittedProp);
+			if (StringUtils.isNotEmpty(propertyValue)) {
+				builder.append(propertyValue);
+			} else {
+				builder.append(splittedProp);
+			}
+		}
+		return builder.toString();
 	}
 	
 	/**
@@ -1101,13 +1126,7 @@ public class PomProcessor {
 	 */
 	public static void main(String[] args) throws JAXBException, IOException, PhrescoPomException {
 		PomProcessor p = new PomProcessor(new File("pomTest.xml"));
-		BuildBase build = new BuildBase();
-		build.setFinalName("FinalName");
-		build.setDirectory("Directory");
-		com.phresco.pom.model.Profile.Modules modules = new com.phresco.pom.model.Profile.Modules();
-		modules.getModule().add("Module");
-		p.addProfile("profile",build,modules);
-		p.save();
+		p.getMavenVariableProp("/${phresco.test.dir}/functional");
 	}
 
 	/**
