@@ -1091,11 +1091,37 @@ public class PomProcessor {
 	 * @return the source directory
 	 * @throws PhrescoPomException the phresco pom exception
 	 */
-	public String getSourceDirectory() throws PhrescoPomException{
+	public String getSourceDirectory() throws PhrescoPomException {
 		if(model.getBuild().getSourceDirectory()==null){
 			return "src";
 		}
-		return model.getBuild().getSourceDirectory();
+		String sourceDirectory = model.getBuild().getSourceDirectory();
+		if (sourceDirectory.contains("${")) {
+			String propertyKey = sourceDirectory.substring(sourceDirectory.indexOf("{") + 1, sourceDirectory.indexOf("}"));
+			String property = getProperty(propertyKey);
+			if (StringUtils.isNotEmpty(property)) {
+				return property;
+			}
+			Profiles modProfiles = model.getProfiles();
+			if (modProfiles != null) {
+				List<Profile> profiles = modProfiles.getProfile();
+				if (profiles != null) {
+					for (Profile profile : profiles) {
+						Boolean activeByDefault = profile.getActivation().isActiveByDefault();
+						if (activeByDefault) {
+							List<Element> any = profile.getProperties().getAny();
+							for (Element element : any) {
+								if (element.getTagName().equals(propertyKey)) {
+									return element.getTextContent();
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		return sourceDirectory;
 	}
 
 	/**
