@@ -960,6 +960,28 @@ public class PomProcessor {
 		return "";
 	}
 	
+	/**
+	 * Gets the property.
+	 *
+	 * @param propertyName the property name
+	 * @return the property
+	 * @throws PhrescoPomException the phresco pom exception
+	 */
+	public String getPropertyValue(String propertyName) throws PhrescoPomException {
+		if(model.getProperties()==null) {
+			return "";
+		}
+		List<Element> property = model.getProperties().getAny();
+		int size = model.getProperties().getAny().size();
+		for(int i=0;i<size;i++) { 
+			if(propertyName.equals(property.get(i).getTagName())) {
+				String textContent = property.get(i).getTextContent();
+				return textContent;
+			}
+		}
+		return "";
+	}
+	
 	private String getMavenVariableProp(String prop) throws PhrescoPomException {
 		StringBuilder builder = new StringBuilder();
 		String replaceString = prop.replace("${", "");
