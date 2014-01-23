@@ -9,7 +9,9 @@
     <url>http://www.phresco.org</url>
     <scm>
         <connection>https://github.com/photon-infotech/phresco-pom.git</connection>
-    </scm>
+        <developerConnection>scm:git:https://github.com/photon-infotech/phresco-pom.git</developerConnection>
+        <url>scm:git:https://github.com/photon-infotech/phresco-pom.git</url>
+  </scm>
     <build>
         <directory>do_not_checkin/target</directory>
         <finalName>phresco-pom</finalName>
