@@ -841,6 +841,29 @@ public class PomProcessor {
 		}		
 		return null;
 	}
+	
+	
+	/**
+	 * @param groupId
+	 * @param artifactId
+	 * @param executionId
+	 * @return
+	 * @throws PhrescoPomException
+	 */
+	public com.phresco.pom.model.PluginExecution.Configuration getPluginExecutionConfiguration(String groupId, String artifactId, String executionId) throws PhrescoPomException {
+		Plugin plugin = getPlugin(groupId, artifactId);
+		if (plugin != null && plugin.getExecutions() != null && plugin.getExecutions().getExecution() != null) {
+			List<PluginExecution> execution = plugin.getExecutions().getExecution();
+			for (PluginExecution pluginExecution : execution) {
+				if (pluginExecution.getId().equals(executionId)) {
+					if(pluginExecution.getConfiguration() != null) {
+						return pluginExecution.getConfiguration();
+					}
+				}
+			}
+		}
+		return null;
+	}
 
 	/**
 	 * Adds the plugin dependency.
