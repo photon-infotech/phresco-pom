@@ -9,21 +9,17 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import junit.framework.Assert;
 
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -31,7 +27,6 @@ import com.phresco.pom.exception.PhrescoPomException;
 import com.phresco.pom.model.Build;
 import com.phresco.pom.model.Build.Plugins;
 import com.phresco.pom.model.Dependency;
-import com.phresco.pom.model.Model;
 import com.phresco.pom.model.Model.Modules;
 import com.phresco.pom.model.Model.Profiles;
 import com.phresco.pom.model.Model.Properties;
@@ -40,8 +35,6 @@ import com.phresco.pom.model.Parent;
 import com.phresco.pom.model.Plugin;
 import com.phresco.pom.model.Plugin.Configuration;
 import com.phresco.pom.model.Plugin.Dependencies;
-import com.phresco.pom.model.Plugin.Executions;
-import com.phresco.pom.model.PluginExecution;
 import com.phresco.pom.model.PluginManagement;
 import com.phresco.pom.model.Profile;
 import com.phresco.pom.model.ReportPlugin;
@@ -49,8 +42,6 @@ import com.phresco.pom.model.Reporting;
 import com.phresco.pom.model.Scm;
 import com.phresco.pom.util.PomConstants;
 import com.phresco.pom.util.PomProcessor;
-import org.apache.commons.io.IOUtils;
-import org.codehaus.jackson.map.Module;
 public class PomProcessorTest {
 
 	@Before
