@@ -663,6 +663,137 @@ public class PomProcessor {
 			throw new PhrescoPomException(e);
 		}
 	}
+	
+	/**
+	 * Adds the execution configuration.
+	 *
+	 * @param pluginGroupId the plugin group id
+	 * @param pluginArtifactId the plugin artifact id
+	 * @param executionId the execution id
+	 * @param phase the phase
+	 * @param goal the goal
+	 * @param configList the config list
+	 * @param document the document
+	 * @throws PhrescoPomException the phresco pom exception
+	 */
+	public void addExecutionResourceConfiguration(String outPutDir, String pluginGroupId, String pluginArtifactId, String executionId,
+			String phase, String goal, List<Element> configList, Document document) throws PhrescoPomException {
+		boolean addExecution = false;
+		try {
+			
+			
+			
+			Plugin plugin = getPlugin(pluginGroupId, pluginArtifactId);
+			if (plugin == null) {
+				
+				plugin = addPlugin(pluginGroupId, pluginArtifactId, "2.6");
+			}
+
+			Executions executions = plugin.getExecutions();
+
+			if (executions == null) {
+				
+				executions = new Executions();
+				plugin.setExecutions(executions);
+				
+			}
+			PluginExecution execution = getExecution(executions, executionId, goal);
+			
+			if (execution == null) {
+				addExecution = true;
+				 execution = new PluginExecution();
+				execution.setId(executionId);
+				execution.setPhase(phase);
+				Goals goals = new Goals();
+				goals.getGoal().add(goal);
+				execution.setGoals(goals);
+			}
+			com.phresco.pom.model.PluginExecution.Configuration configuration = new com.phresco.pom.model.PluginExecution.Configuration();
+			if (execution.getConfiguration() == null) {
+				execution.setConfiguration(configuration);
+			}
+
+			List<Element> configElementList = execution.getConfiguration().getAny();
+			if (configElementList.isEmpty()) {	
+				
+				createResourceItems(outPutDir ,configList, document, plugin, executions,
+						execution, configuration, addExecution);
+			}
+			else {
+				
+				addResourceItems(outPutDir, configList, document, execution, configuration,configElementList);
+				
+			}
+		} catch (PhrescoPomException e) {
+			throw new PhrescoPomException(e);
+		}
+	}
+	
+	
+
+	/**
+	 * Adds the execution configuration.
+	 *
+	 * @param pluginGroupId the plugin group id
+	 * @param pluginArtifactId the plugin artifact id
+	 * @param executionId the execution id
+	 * @param phase the phase
+	 * @param goal the goal
+	 * @param configList the config list
+	 * @param document the document
+	 * @throws PhrescoPomException the phresco pom exception
+	 */
+	public void addFileSetConfiguration(String pluginGroupId, String pluginArtifactId, String executionId,
+			String phase, String goal, List<Element> configList, Document document) throws PhrescoPomException {
+		boolean addExecution = false;
+		try {
+			
+			
+			
+			Plugin plugin = getPlugin(pluginGroupId, pluginArtifactId);
+			if (plugin == null) {
+				
+				plugin = addPlugin(pluginGroupId, pluginArtifactId, "2.4.1");
+			}
+
+			Executions executions = plugin.getExecutions();
+
+			if (executions == null) {
+				
+				executions = new Executions();
+				plugin.setExecutions(executions);
+				
+			}
+			PluginExecution execution = getExecution(executions, executionId, goal);
+			
+			if (execution == null) {
+				addExecution = true;
+				 execution = new PluginExecution();
+				execution.setId(executionId);
+				execution.setPhase(phase);
+				Goals goals = new Goals();
+				goals.getGoal().add(goal);
+				execution.setGoals(goals);
+			}
+			com.phresco.pom.model.PluginExecution.Configuration configuration = new com.phresco.pom.model.PluginExecution.Configuration();
+			if (execution.getConfiguration() == null) {
+				execution.setConfiguration(configuration);
+			}
+
+			List<Element> configElementList = execution.getConfiguration().getAny();
+			if (configElementList.isEmpty()) {	
+				
+				createFileSetItems(configList, document, plugin, executions, execution, configuration, addExecution);
+			}
+			else {
+				
+				addFileSetItems(configList, document, execution, configuration,configElementList);
+				
+			}
+		} catch (PhrescoPomException e) {
+			throw new PhrescoPomException(e);
+		}
+	}
 
 	/**
 	 * Adds the artifact item.
@@ -700,6 +831,161 @@ public class PomProcessor {
 		}
 	}
 
+	
+	/**
+	 * Adds the artifact item.
+	 *
+	 * @param configList the config list
+	 * @param document the document
+	 * @param execution the execution
+	 * @param configuration the configuration
+	 * @param configElementList the config element list
+	 */
+	private static void addResourceItems(String outPutDir, List<Element> configList, Document document,
+			PluginExecution execution,
+			com.phresco.pom.model.PluginExecution.Configuration configuration,
+			List<Element> configElementList) {
+
+		Element resources;
+		Element resource;
+		Element outputDirectory = null;
+		for (Element configElement : configElementList) {
+			if(configElement.getTagName().equals("outputDirectory")) {
+				outputDirectory = configElement;
+			}
+			if (configElement.getTagName().equals("resources")) {
+				resources = configElement;
+		        resource = document.createElement("resource");
+				for (Element configListElement : configList) {
+					resource.appendChild(configListElement);
+				}
+				Element outputDirectoryImported = (Element) document.importNode(outputDirectory, Boolean.TRUE);
+				Element imported = (Element) document.importNode(resources, Boolean.TRUE);
+				imported.appendChild(resource);
+				configuration.getAny().add(outputDirectoryImported);
+				configuration.getAny().add(imported);
+				execution.setConfiguration(configuration);
+			}
+		}
+		
+}
+		
+	
+	/**
+	 * Adds the artifact item.
+	 *
+	 * @param configList the config list
+	 * @param document the document
+	 * @param execution the execution
+	 * @param configuration the configuration
+	 * @param configElementList the config element list
+	 */
+	private static void addFileSetItems(List<Element> configList, Document document,
+			PluginExecution execution,
+			com.phresco.pom.model.PluginExecution.Configuration configuration,
+			List<Element> configElementList) {
+
+		Element filesets;
+		Element fileset;
+		
+		for (Element configElement : configElementList) {
+			
+			if (configElement.getTagName().equals("filesets")) {
+				filesets = configElement;
+				fileset = document.createElement("fileset");
+				for (Element configListElement : configList) {
+					fileset.appendChild(configListElement);
+				}
+				
+				Element imported = (Element) document.importNode(filesets, Boolean.TRUE);
+				imported.appendChild(fileset);
+				configuration.getAny().add(imported);
+				execution.setConfiguration(configuration);
+			}
+		}
+		
+}
+		
+		
+		
+		
+	
+
+	/**
+	 * Creates the artifact items.
+	 *
+	 *@param configList the  outPut Directory
+	 * @param configList the config list
+	 * @param document the document
+	 * @param plugin the plugin
+	 * @param executions the executions
+	 * @param execution the execution
+	 * @param configuration the configuration
+	 * @param addExecution the add execution
+	 */
+	private static void createResourceItems(String outPutDir ,List<Element> resourcesList, Document document, Plugin plugin, Executions executions,
+			PluginExecution execution, com.phresco.pom.model.PluginExecution.Configuration configuration,
+			boolean addExecution) {
+
+		Element resources;
+		Element resource;
+		
+		
+		Element outputDirectory = document.createElement("outputDirectory");
+		
+		outputDirectory.setTextContent(outPutDir);
+		
+		resources = document.createElement("resources");
+		resource = document.createElement("resource");
+		for (Element resourceElement : resourcesList) {
+			resource.appendChild(resourceElement);
+			resources.appendChild(resource);
+		}
+		configuration.getAny().add(outputDirectory);
+		configuration.getAny().add(resources);
+		execution.setConfiguration(configuration);
+		if (addExecution) {
+			executions.getExecution().add(execution);
+			plugin.setExecutions(executions);
+		}
+	}
+	
+	
+	/**
+	 * Creates the artifact items.
+	 *
+	 * @param configList the config list
+	 * @param document the document
+	 * @param plugin the plugin
+	 * @param executions the executions
+	 * @param execution the execution
+	 * @param configuration the configuration
+	 * @param addExecution the add execution
+	 */
+	private static void createFileSetItems(List<Element> filesetsList, Document document, Plugin plugin, Executions executions,
+			PluginExecution execution, com.phresco.pom.model.PluginExecution.Configuration configuration,
+			boolean addExecution) {
+
+		Element filesets;
+		Element fileset;
+		
+        filesets = document.createElement("filesets");
+		fileset = document.createElement("fileset");
+		for (Element filesetElement : filesetsList) {
+			fileset.appendChild(filesetElement);
+			filesets.appendChild(fileset);
+		}
+		
+		configuration.getAny().add(filesets);
+		
+		execution.setConfiguration(configuration);
+		
+		if (addExecution) {
+			executions.getExecution().add(execution);
+			plugin.setExecutions(executions);
+		}
+	}
+	
 	/**
 	 * Creates the artifact items.
 	 *
