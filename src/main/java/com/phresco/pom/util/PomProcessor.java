@@ -1400,6 +1400,14 @@ public class PomProcessor {
 		}
 	}
 	
+	public void removeModules() throws PhrescoPomException {
+		if(model.getModules() == null){
+			return;
+		}
+		model.setModules(null);
+	}
+
+	
 	/**
 	 * Adds the source directory.
 	 *
