@@ -1,9 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/POM/4.0.0">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.photon.phresco.pom</groupId>
     <artifactId>phresco-pom</artifactId>
     <packaging>jar</packaging>
-    <name>Phresco Pom</name>
+    <name>PhrescoPom</name>
     <version>3.3.1.16002-SNAPSHOT</version>
     <description>phresco-Pom</description>
     <url>http://www.phresco.org</url>
@@ -168,18 +169,13 @@
     </dependencies>
     <distributionManagement>
         <repository>
-            <id>${releases.repo.id}</id>
-            <url>${releases.repo.url}</url>
+            <id>Phresco-release</id>
+            <url>http://phresco.photoninfotech.com/repo/content/repositories/dep-3-2/</url>
         </repository>
         <snapshotRepository>
-            <id>${snapshots.repo.id}</id>
-            <url>${snapshots.repo.url}</url>
+            <id>Phresco-snapshot</id>
+            <url>http://phresco.photoninfotech.com/repo/content/repositories/snapshots/</url>
         </snapshotRepository>
-        <site>
-            <id>phresco.pom</id>
-            <name>Phresco POM framework</name>
-            <url>${siteBaseUrl}/phresco-pom/</url>
-        </site>
     </distributionManagement>
     <properties>
         <phresco.env.config.xml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">/src/main/resources/phresco-env-config.xml</phresco.env.config.xml>
@@ -207,5 +203,6 @@
         <tools-maven-plugin.version xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">1.1</tools-maven-plugin.version>
         <sonar.exclusions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">com/phresco/pom/model/*.java</sonar.exclusions>
         <phresco.src.repo.url>https://github.com/photon-infotech/phresco-pom.git</phresco.src.repo.url>
+        <phresco.src.root.dir>../phresco-pom/</phresco.src.root.dir>
     </properties>
 </project>
